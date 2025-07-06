@@ -12,7 +12,7 @@ export async function GET(req: Request, {params} : {params: Promise<{user_id: st
         return await UserController.getUserDetail(self, user_id);
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }
 
@@ -38,7 +38,7 @@ export async function PUT(req: Request, {params} : {params: Promise<{user_id: st
         return await UserController.updateUserDetail(user_id, body);
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }
 
@@ -51,7 +51,7 @@ export async function DELETE(req: Request, {params} : {params: Promise<{user_id:
         return await UserController.deleteUserDetail(user_id);
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }
 

@@ -8,6 +8,6 @@ export async function POST(req: Request)
         return await UserController.logoutUser();
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }

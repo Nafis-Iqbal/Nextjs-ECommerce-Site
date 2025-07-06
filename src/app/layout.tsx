@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Satisfy, Ubuntu_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Satisfy, Ubuntu_Mono, Fredericka_the_Great } from "next/font/google";
 import "./globals.css";
 
 import Navbar from "@/components/structure-components/Navbar";

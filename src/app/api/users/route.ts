@@ -7,6 +7,7 @@ import { UserValidators } from "@/validators";
 export async function POST(req: Request)
 {
     const body = await req.json();
+    
     const parsed = UserValidators.registerUserSchema.safeParse(body);
     if(!parsed.success){
         return new Response(
@@ -23,7 +24,7 @@ export async function POST(req: Request)
         return await UserController.createUser(body);
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }
 
@@ -34,7 +35,7 @@ export async function GET(req: Request)
         return await UserController.getAllUsers();
     }
     catch(error) {
-        return errorResponse();
+        return errorResponse(error);
     }
 }
 

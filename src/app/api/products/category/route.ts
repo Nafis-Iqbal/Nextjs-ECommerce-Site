@@ -1,28 +1,28 @@
 import { errorResponse } from "@/utilities/utilities";
 
-import { UserController } from "@/controllers";
-import { UserValidators } from "@/validators"; 
+import { ProductController } from "@/controllers";
+import { ProductValidators } from "@/validators";
 
-//login user
 export async function POST(req: Request)
 {
     const body = await req.json();
-    const parsed = UserValidators.loginUserSchema.safeParse(body);
+    
+    const parsed = ProductValidators.filterProductSchema.safeParse(body);
     if(!parsed.success){
         return new Response(
             JSON.stringify({
-                status: "failed",
+                status: "Product filters missing.",
                 error: parsed.error.format(),
                 data: []
             }),
             { status: 400 }
         );
     }
-    
+
     try {
-        return await UserController.loginUser(body);
+        return await ProductController.getProductList(body);
     }
     catch(error) {
         return errorResponse(error);
-    }
+    } 
 }

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { Role } from "@prisma/client";
+import { Role } from "@/types/enums";
 
-export function withAuth(handler: (req: Request, context: any) => Promise<Response>) {
-    return async function(req: Request, context: any){
+export function withUserData(handler: (req: NextRequest, context: any, self_user_data?: {user_id: string; email: string; role: Role}) => Promise<Response>) {
+    return async function(req: NextRequest, context: any){
         const authHeader = req.headers.get('Authorization');
       
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return new NextResponse('Authentication token is missing or malformed', { status: 401 });
+            return handler(req, context);
         }
         
         const token = authHeader.slice(7); // Remove "Bearer " prefix
@@ -16,10 +16,9 @@ export function withAuth(handler: (req: Request, context: any) => Promise<Respon
         try {
             const decoded = jwt.verify(token ?? "", process.env.JWT_SECRET ?? "abc");
             if (decoded && typeof decoded !== "string") {
-                const userData = decoded as { id: number; email: string; role: Role };
-                (req as any).user = userData;
+                const userData = decoded as { user_id: string; email: string; role: Role };
 
-                return handler(req, context);
+                return handler(req, context, userData);
             }
             else{
                 return new NextResponse(
@@ -37,7 +36,10 @@ export function withAuth(handler: (req: Request, context: any) => Promise<Respon
     }
 }
 
-export function withAdminRole(handler: (req: Request, context: any) => Promise<Response>, accessType: Role) {
+//One middleware would've been enough. Role checks can be done inside route handlers as well.
+
+export function withAdminRole(handler: (req: Request, context: any, self_user_data?: {user_id: string; email: string; role: Role}) => Promise<Response>, 
+    accessType: Role) {
     return async function(req: Request, context: any){
         const authHeader = req.headers.get('Authorization');
       
@@ -50,15 +52,14 @@ export function withAdminRole(handler: (req: Request, context: any) => Promise<R
         try {
             const decoded = jwt.verify(token ?? "", process.env.JWT_SECRET ?? "abc");
             if (decoded && typeof decoded !== "string") {
-                const userData = decoded as { id: number; email: string; role: Role };
-                (req as any).user = userData;
-
-                if(userData.role === accessType) {
-                    return handler(req, context);
+                const userData = decoded as { user_id: string; email: string; role: Role };
+                
+                if(userData.role === accessType || userData.role === 'MASTER_ADMIN') {
+                    return handler(req, context ?? null, userData ?? null);
                 }
                 else {
                     return new NextResponse(
-                        JSON.stringify('User role restricted from access.'),
+                        JSON.stringify('Unauthorized action for user role.'),
                         { status: 401 }
                     );
                 }

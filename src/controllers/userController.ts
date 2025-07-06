@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import prismadb from "@/prisma/prismadb";
-import { NextResponse } from "next/server";
+
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -47,15 +48,19 @@ export async function createUser(data: {user_name: string, email: string, passwo
             {expiresIn: '1hr'}
         )
         
-        return new Response(
-            JSON.stringify({
-                status: "success",
-                message: "User created successfully",
-                data: new_user,
-                token: token
-            }),
-            { status: 200 }
-        );
+        if(new_user) {
+            const {password_hashed, ...sanitized_user} = new_user;
+
+            return new Response(
+                JSON.stringify({
+                    status: "success",
+                    message: "User created successfully",
+                    data: sanitized_user,
+                    token: token
+                }),
+                { status: 200 }
+            );
+        }
     }
     catch(error) {
         return new Response("Internal server error", {status: 500});
@@ -64,7 +69,14 @@ export async function createUser(data: {user_name: string, email: string, passwo
 
 export async function getAllUsers() {
     try {
-        const users = await prismadb.user.findMany();
+        const users = await prismadb.user.findMany({
+            select: {
+                id: true,
+                user_name: true,
+                email: true,
+                role: true
+            }
+        });
 
         return new Response(
             JSON.stringify({
@@ -83,7 +95,13 @@ export async function getAllUsers() {
 export async function getUserDetail(self: boolean, id: string) {
     try {
         const user_detail = await prismadb.user.findUnique({
-            where: {id}
+            where: {id},
+            select: {
+                id: true,
+                user_name: true,
+                email: true,
+                role: true
+            }
         });
 
         if(!user_detail){
@@ -140,7 +158,12 @@ export async function updateUserDetail(id: string, data: {user_name: string}) {
 export async function deleteUserDetail(id: string) {
     try {
         const deleted_User = await prismadb.user.delete({
-            where: {id}
+            where: {
+                id,
+                role: {
+                    not: 'MASTER_ADMIN'
+                }
+            }
         })
 
         return new Response(
@@ -153,7 +176,7 @@ export async function deleteUserDetail(id: string) {
         );
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return new Response("Internal server error, or trying to delete Master Admin", {status: 500});
     }
 }
 
@@ -199,15 +222,19 @@ export async function loginUser(data: {email: string, password: string}) {
             {expiresIn: '1hr'}
         )
 
-        return new Response(
-            JSON.stringify({
-                status: "success",
-                message: "User logged in successfully",
-                data: existingUser,
-                token: token
-            }),
-            { status: 200 }
-        );
+        if(existingUser) {
+            const {password_hashed, ...sanitizedUser} = existingUser;
+            
+            return new Response(
+                JSON.stringify({
+                    status: "success",
+                    message: "User logged in successfully",
+                    data: sanitizedUser,
+                    token: token
+                }),
+                { status: 200 }
+            );
+        }
     }
     catch(error) {
         return new Response("Internal server error", {status: 500});
@@ -219,6 +246,6 @@ export async function logoutUser() {
 
     }
     catch(error) {
-        return new NextResponse("Internal server error", {status: 500});
+        return new Response("Internal server error", {status: 500});
     }
 }
