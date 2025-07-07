@@ -5,7 +5,15 @@ export enum Role {
 }
 
 export enum Status {
+  PAYMENT_PENDING = "PAYMENT_PENDING",
   PENDING = "PENDING",
+  SHIPPED = "SHIPPED",
+  FAILED = "FAILED",
   CANCELLED = "CANCELLED",
   COMPLETED = "COMPLETED"
+}
+
+export enum Priority {
+  NORMAL = "NORMAL",
+  URGENT = "URGENT"
 }

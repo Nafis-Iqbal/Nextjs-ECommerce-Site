@@ -28,6 +28,11 @@ enum Status {
   COMPLETED
 }
 
+enum Priority {
+  NORMAL
+  URGENT
+}
+
 model User {
   id String @id @default(uuid()) @map("_id")
   user_name String 
@@ -42,6 +47,7 @@ model User {
   buyerOrders Order[] @relation("BuyerOrders")
   sellerOrderBuyer SellerOrder[] @relation("SellerOrderBuyer")
   sellerOrderSeller SellerOrder[] @relation("SellerOrderSeller")
+  notifications Notification[]
 }
 
 model Product {
@@ -175,4 +181,17 @@ model Address {
   @@unique([id, user_id])
   user User? @relation(fields: [user_id], references: [id])
   orders Order[] 
+}
+
+model Notification {
+  id String @id @default(uuid()) @map("_id")
+
+  content String
+  isRead Boolean @default(false)
+  notificationPriority Priority @default(NORMAL)
+
+  user_id String
+
+  @@unique([id, user_id])
+  user User @relation(fields: [user_id], references: [id])
 }

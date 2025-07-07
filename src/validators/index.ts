@@ -4,5 +4,6 @@ import * as ProductValidators from "./productValidators";
 import * as ReviewValidators from "./reviewValidators";
 import * as CartValidators from "./cartValidators";
 import * as OrderValidators from "./orderValidators";
+import * as NotificationValidators from "./notificationValidator";
 
-export {UserValidators, CategoryValidators, ProductValidators, ReviewValidators, CartValidators, OrderValidators};
+export {UserValidators, CategoryValidators, ProductValidators, ReviewValidators, CartValidators, OrderValidators, NotificationValidators};
