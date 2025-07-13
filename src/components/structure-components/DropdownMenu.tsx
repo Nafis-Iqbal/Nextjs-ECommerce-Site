@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import BasicButton from "../Buttons";
+import BasicButton from "../custom-elements/Buttons";
 
 //Must use this with a navbar component. Navbar must have a child, or itself positioned relatively, so that this dropdown is positioned properly
 
@@ -24,7 +24,7 @@ const DropdownMenu = ({menuPosition = "top-full right-0"} : {menuPosition?: stri
             </BasicButton>
 
             {isMenuOpen && (
-                <div className={`absolute ${menuPosition} flex flex-col md:hidden space-y-1 items-center text-gray-700 opacity-100 font-sans`}>
+                <div className={`absolute ${menuPosition} flex flex-col md:hidden space-y-1 items-center text-white opacity-100 font-sans`}>
                     <a className="p-2 scroll-smooth border-b-1" href="#experience" onClick={() => onMenuNavigate("#experience")}>Language</a>
                     <a className="p-2 scroll-smooth border-b-1" href="#projectLinks" onClick={() => onMenuNavigate("#projectLinks")}>Special Deals</a>
                     <a className="p-2 scroll-smooth border-b-1" href="#skills" onClick={() => onMenuNavigate("#skills")}>Cart</a>

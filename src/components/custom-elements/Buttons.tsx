@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Image from "next/image";
 
 interface buttonProps {
     padding?: string;
@@ -47,6 +48,15 @@ export const BlackButton = ({ extraStyle, onClick, children } : buttonProps) => 
     
     return (
         <button className={buttonStyle} onClick={onClick}>
+            {children}
+        </button>
+    );
+}
+
+export const EditButton = ({className, onClick, children} : {className?: string, onClick: () => void, children?: React.ReactNode}) => {
+    return (
+        <button className={`hover:outline-1 ${className}`} onClick={() => onClick()}>
+            <Image src="/edit_icon.png" alt="eidt_icon" width={20} height={20}></Image>
             {children}
         </button>
     );

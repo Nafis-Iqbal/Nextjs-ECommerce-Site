@@ -6,11 +6,11 @@ import DivGap, {HorizontalDivider, VerticalDivider} from "../UIUtilities";
 
 const Footer: React.FC = () => {
     return (
-        <div className="flex flex-col bg-blue-500">
-            <DivGap/>
+        <div className="flex flex-col bg-[#00FF99]">
+            <DivGap customHeightGap="h-[50px] bg-inherit"/>
 
-            <div className="flex flex-col md:flex-row p-1">
-                <div className="flex flex-col w-full md:w-[50%] mr-10 items-center md:items-end justify-center space-y-6 border-right font-sans">
+            <div className="flex flex-col md:flex-row p-1 bg-inherit">
+                <div className="flex flex-col w-full md:w-[50%] mr-10 items-center md:items-end justify-center space-y-6 border-right font-sans bg-inherit">
                     <a
                         href="https://github.com/Nafis-Iqbal"
                         target="_blank"
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
 
                 <HorizontalDivider className="md:hidden w-[80%] mx-auto"/>
 
-                <div className="flex flex-col w-full md:w-[50%] text-center md:text-start text-lg text-green-800 font-sans font-semibold">
+                <div className="flex flex-col w-full md:w-[50%] text-center md:text-start text-lg text-green-800 font-sans font-semibold bg-inherit">
                     <a className="md:ml-10 p-2 scroll-smooth" href="#experience">Language</a>
                     <a className="md:ml-10 p-2 scroll-smooth" href="#projectLinks">Special Deals</a>
                     <a className="md:ml-10 p-2 scroll-smooth" href="#skills">Cart</a>
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
                 </div>
             </div>
 
-            <DivGap/>
+            <DivGap customHeightGap="h-[50px] bg-inherit"/>
         </div>
     );
 }

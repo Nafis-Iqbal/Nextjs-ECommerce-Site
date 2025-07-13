@@ -48,6 +48,8 @@ model User {
   sellerOrderBuyer SellerOrder[] @relation("SellerOrderBuyer")
   sellerOrderSeller SellerOrder[] @relation("SellerOrderSeller")
   notifications Notification[]
+  accounts Account[]
+  sessions Session[]
 }
 
 model Product {
@@ -194,4 +196,41 @@ model Notification {
 
   @@unique([id, user_id])
   user User @relation(fields: [user_id], references: [id])
+}
+
+model Account {
+  id String @id @default(uuid()) @map("_id")
+  userId String
+  provider String
+  providerAccountId String
+  type String
+  refresh_token String? 
+  access_token String? 
+  expires_at Int?
+  id_token String? 
+  scope String?
+  token_type String?
+  session_state String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id String @id @default(uuid()) @map("_id")
+  sessionToken String   @unique
+  userId String
+  expires DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  id String   @id @default(uuid()) @map("_id")
+  identifier String
+  token String @unique
+  expires DateTime
+
+  @@unique([identifier, token])
 }

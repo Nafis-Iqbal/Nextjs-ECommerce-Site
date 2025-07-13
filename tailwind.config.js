@@ -13,10 +13,10 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'sans-serif'],
-        fredericka: ['var(--font-fredericka)', 'sans-serif'],
-        ubuntu: ['var(--font-ubuntu)', 'sans-serif'],
-        rubik: ['var(--font-rubik)', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'sans-serif'],
+        ubuntu: ['var(--font-ubuntu-mono)', 'sans-serif'],
         satisfy: ['var(--font-satisfy)', 'sans-serif'],
+        fredericka: ['var(--font-fredericka)', 'sans-serif'],
       },
       colors: {
         brand: {
