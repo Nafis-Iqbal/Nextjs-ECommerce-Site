@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Role, UserStatus, PaymentStatus, ProductStatus, ComplaintStatus } from "@/types/enums"
 
-import { HorizontalDivider } from "@/components/UIUtilities"
+import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 import TableLayout from "@/components/layout-elements/TableLayout";
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout";
 
@@ -51,12 +51,11 @@ export default function MasterAdminDashboard() {
                 <p className="text-green-200">Site management functions here.</p>
 
                 <div className="flex flex-col mt-5">
+                    <div className="flex mb-2 space-x-5">
+                        <h4 className="">All Users</h4>
+                        <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
+                    </div>
                     <TableLayout className="mr-5">
-                        <div className="flex mb-2 space-x-5">
-                            <h4 className="">All Users</h4>
-                            <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
-                        </div>
-
                         <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                             <p className="w-[5%]">Sr. No.</p>
                             <p className="w-[25%]">User Name</p>
@@ -140,12 +139,11 @@ export default function MasterAdminDashboard() {
                 </div>
 
                 <div className="flex flex-col">
+                    <div className="flex space-x-5 mb-2">
+                        <h4 className="">Vendors</h4>
+                        <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
+                    </div>
                     <TableLayout className="mr-5">
-                        <div className="flex space-x-5 mb-2">
-                            <h4 className="">Vendors</h4>
-                            <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
-                        </div>
-
                         <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                             <p className="w-[5%]">Sr. No.</p>
                             <p className="w-[30%]">Vendor Name</p>
@@ -208,12 +206,11 @@ export default function MasterAdminDashboard() {
                 </div>
 
                 <div className="flex flex-col">
+                    <div className="flex space-x-5 mb-2">
+                        <h4 className="">All Vendor Products</h4>
+                        <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
+                    </div>
                     <TableLayout className="mr-5">
-                        <div className="flex space-x-5 mb-2">
-                            <h4 className="">All Vendor Products</h4>
-                            <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
-                        </div>
-
                         <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                             <p className="w-[5%]">Sr. No.</p>
                             <p className="w-[20%]">Product Name</p>
@@ -273,12 +270,11 @@ export default function MasterAdminDashboard() {
                 </div>
 
                 <div className="flex flex-col">
+                    <div className="flex space-x-5 mb-2">
+                        <h4 className="">User Complaints</h4>
+                        <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
+                    </div>
                     <TableLayout className="mr-5">
-                        <div className="flex space-x-5 mb-2">
-                            <h4 className="">User Complaints</h4>
-                            <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
-                        </div>
-
                         <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                             <p className="w-[5%]">Sr. No.</p>
                             <p className="w-[45%]">Complaint Subject</p>

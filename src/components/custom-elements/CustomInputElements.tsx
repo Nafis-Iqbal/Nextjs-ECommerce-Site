@@ -1,7 +1,21 @@
-export const CustomTextInput = ({customStyle, placeholderText} : {customStyle?: string, placeholderText?: string, onChange?: () => void}) => {
+type CustomInputProps = {
+  className?: string;
+  placeholderText?: string;
+  onChange?: () => void;
+}
+
+export const CustomTextArea = ({className, placeholderText} : CustomInputProps) => {
     return (
-        <input className={`p-1 bg-gray-100 border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
-            focus:outline-none focus:ring-2 focus:ring-green-600 ${customStyle}`} type="text" placeholder={placeholderText}
+        <textarea className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
+            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
+        />
+    )
+}
+
+export const CustomTextInput = ({className, placeholderText} : CustomInputProps) => {
+    return (
+        <input className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
+            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} type="text" placeholder={placeholderText}
         />
     )
 }

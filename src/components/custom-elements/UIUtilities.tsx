@@ -1,9 +1,19 @@
+import Image from "next/image";
+
 export const Logo = ({textSize = "md:text-xl lg:text-2xl", position = "ml-5"} : {textSize?: string, position?: string}) => {
     return (
         <div className={`w-[20%] ${position} p-2 text-center bg-[#0F0F0F] ${textSize} text-[#00FF99] font-satisfy rounded-sm`}>
             Suit up!
         </div>
     );
+}
+
+export const NextImage = ({className, src, alt} : {className?: string, src: string, alt: string}) => {
+    return (
+        <div className={`relative ${className}`}>
+            <Image className="object-cover" src={src} alt={alt} fill/>
+        </div>
+    )
 }
 
 export const HorizontalDivider = ({className} : {className?: string}) => {
@@ -23,7 +33,7 @@ export const HorizontalDividerWithText = ({className, children} : {className?: s
     );
 }
 
-export const VerticalDivider = ({ className = "", height = "h-full" }: {className: string, height: string}) => (
+export const VerticalDivider = ({ className = "", height = "h-full" }: {className?: string, height?: string}) => (
   <div className={`border-l border-gray-300 ${height} ${className}`} />
 );
 

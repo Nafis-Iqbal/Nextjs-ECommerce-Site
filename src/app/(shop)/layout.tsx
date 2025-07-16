@@ -1,7 +1,8 @@
 import Navbar from "@/components/structure-components/Navbar";
 import Footer from "@/components/structure-components/Footer";
 import BottomNavbar from "@/components/structure-components/BottomNavbar";
-import SidebarMenu from "@/components/structure-components/SIdebarMenu";
+import {MotionSidebarMenu} from "@/components/structure-components/SIdebarMenu";
+import DivGap from "@/components/custom-elements/UIUtilities";
 
 export default function ShopLayout({children} : {children: React.ReactNode}){
 
@@ -12,17 +13,30 @@ export default function ShopLayout({children} : {children: React.ReactNode}){
                     <Navbar/>
                 </nav>
             </header>
-            
-            <div className="flex border min-h-screen">
-                <aside className="relative z-10 flex-grow w-[15%] border-r-4 shadow-[0_0_20px_#00FF99] font-sans">
-                    <SidebarMenu isPopOutSidebar={false}/>
-                </aside>
 
-                <div className="flex flex-col flex-grow w-[60%] border-r-4">
+            <DivGap customHeightGap="h-[55px] md:h-[70px]"/>
+            
+            <div className="flex justify-between border min-h-screen">
+                <aside className="relative z-10 flex-grow w-[15%] font-sans">
+                    <MotionSidebarMenu
+                        variants={{
+                            rest: { x: '-100%', transition: { type: 'spring', stiffness: 500, damping: 40, delay: 2.0 } },
+                            hover: { x: '-2%', transition: { type: 'spring', stiffness: 200, damping: 20} }
+                        }}
+                        initial="rest"
+                        animate="rest"
+                        whileHover="hover"
+                        isPopOutSidebar={false}
+                        opensOnHover={true}
+                        className="fixed w-[15%]"
+                    />
+                </aside>
+                
+                <div className="flex flex-col flex-grow w-[70%]">
                     {children}
                 </div>
 
-                <aside className="relative z-10 flex-grow w-[25%] shadow-[0_0_20px_#00FF99]">
+                <aside className="relative z-10 flex-grow w-[15%]">
                     
                 </aside>
             </div>

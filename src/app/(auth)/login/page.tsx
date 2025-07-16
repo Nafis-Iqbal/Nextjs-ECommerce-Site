@@ -1,6 +1,6 @@
 "use client";
 
-import DivGap, {HorizontalDividerWithText, Logo} from "@/components/UIUtilities"
+import DivGap, {HorizontalDividerWithText, Logo} from "@/components/custom-elements/UIUtilities"
 import { signIn } from "next-auth/react";
 import Image from 'next/image';
 import { useState } from "react";

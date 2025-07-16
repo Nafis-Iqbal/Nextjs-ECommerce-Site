@@ -2,7 +2,7 @@
 
 import { Github, Linkedin } from "lucide-react";
 
-import DivGap, {HorizontalDivider, VerticalDivider} from "../UIUtilities";
+import DivGap, {HorizontalDivider, VerticalDivider} from "../custom-elements/UIUtilities";
 
 const Footer: React.FC = () => {
     return (

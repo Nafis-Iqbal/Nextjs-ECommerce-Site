@@ -13,6 +13,11 @@ export enum OrderStatus {
   COMPLETED = "COMPLETED"
 }
 
+export enum OrderItemStatus {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED"
+}
+
 export enum UserStatus {
   ACTIVE = "ACTIVE",
   BANNED = "BANNED",

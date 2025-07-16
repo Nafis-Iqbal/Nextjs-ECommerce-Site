@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { HorizontalDivider } from "@/components/UIUtilities"
+import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 
 export default function DashboardPage() {
     return (

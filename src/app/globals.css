@@ -33,6 +33,14 @@
     @apply sm:text-xl md:text-2xl
   }
 
+  textarea {
+    resize: none;
+  }
+
+  pre {
+    font-family: inherit;
+  }
+
   label {
     @apply sm:text-lg md:text-xl
   }

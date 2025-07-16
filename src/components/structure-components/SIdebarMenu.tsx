@@ -1,18 +1,26 @@
 "use client";
 
 import { redirect } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { forwardRef, useState } from 'react';
 
-const SidebarMenu: React.FC<{isPopOutSidebar: boolean}> = ({isPopOutSidebar} : {isPopOutSidebar: boolean}) => {
+type SidebarMenuProps = {
+    className?: string;
+    style?: React.CSSProperties;
+    isPopOutSidebar: boolean;
+    opensOnHover?: boolean;
+}
 
+const SidebarMenuWithRef = forwardRef<HTMLDivElement, SidebarMenuProps>(({className, style, isPopOutSidebar, opensOnHover = false}, ref) => {
     const onClose = () => {
 
     }
 
-    const smallScreenStyle = "fixed top-0 left-0 md:hidden w-[60%] min-h-screen rounded-sm border-r-4 z-50";
-    const bigScreenStyle = "hidden md:block md:w-[100%] rounded-sm";
+    const smallScreenStyle = "fixed top-0 left-0 md:hidden w-[60%] min-h-screen border-4 border-[#00FF99] z-50 " + className;
+    const bigScreenStyle = "border-4 border-[#00FF99] z-50 " + className;
   
   return (
-    <aside className={isPopOutSidebar ? smallScreenStyle : bigScreenStyle}>
+    <div ref={ref} className={isPopOutSidebar ? smallScreenStyle : bigScreenStyle} style={style}>
         {isPopOutSidebar && (
             <div>
                 <div className="flex justify-center items-center min-h-[120px] font-bold text-3xl bg-pink-400 border-b-4 border-pink-100 text-gray-100">Stuff Trader</div>
@@ -20,7 +28,9 @@ const SidebarMenu: React.FC<{isPopOutSidebar: boolean}> = ({isPopOutSidebar} : {
             </div>
         )}
 
-        <div className="p-3 text-xl text-center border-b-4 text-pink-100 bg-gray-600">Pages</div>
+        <div className="relative p-3 text-xl text-center border-b-4 text-pink-100 bg-gray-600">Pages
+            {opensOnHover && (<div className="absolute -right-13 -top-1 h-[108%] w-[50px] bg-[#00FF99] rounded-r-md"></div>)}
+        </div>
 
         <ul className="flex flex-col">
             <li>
@@ -66,8 +76,12 @@ const SidebarMenu: React.FC<{isPopOutSidebar: boolean}> = ({isPopOutSidebar} : {
         </ul>
 
         <button className="display:block w-full border-b-4 hover:bg-emerald-400 p-3 text-xl text-center text-pink-100" >Logout</button>
-    </aside>
+    </div>
   );
-};
+});
 
-export default SidebarMenu;
+SidebarMenuWithRef.displayName = "SidebarMenuWithRef";
+
+export const MotionSidebarMenu = motion(SidebarMenuWithRef);
+
+export default SidebarMenuWithRef;

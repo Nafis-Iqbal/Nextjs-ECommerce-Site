@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-import BasicButton from "../custom-elements/BasicButton";
+import BasicButton from "../custom-elements/Buttons";
 import LoadingSpinnerBlock from "../placeholder-components/LoadingSpinnerBlock";
 
 const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, onUpdate: (category: Category) => void, onDelete: (category_id:string) => void}) => {
@@ -45,27 +45,29 @@ const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, o
             </td>
             <td>
                 <BasicButton
-                    buttonText="Update Tag"
                     buttonColor="green-500"
-                    textColor="white"
+                    buttonTextColor="white"
                     onClick={() => {
                         onUpdate({id: category.id, title: categoryTitle});
                         setIsSpinnerActive(true);
                     }}
-                    customStyle="p-1 bg-emerald-400 hover:bg-emerald-500 text-sm md:text-base"
-                />
+                    extraStyle="p-1 bg-emerald-400 hover:bg-emerald-500 text-sm md:text-base"
+                >
+                    Update Tag
+                </BasicButton>
             </td>
             <td>
                 <BasicButton
-                    buttonText="Delete Tag"
                     buttonColor="red-500"
-                    textColor="white"
+                    buttonTextColor="white"
                     onClick={() => {
                         onDelete(category.id ?? '');
                         setIsSpinnerActive(true);
                     }}
-                    customStyle="p-1 bg-red-500 hover:bg-red-600 text-white text-sm md:text-base"
-                />
+                    extraStyle="p-1 bg-red-500 hover:bg-red-600 text-white text-sm md:text-base"
+                >
+                    Delete Tag
+                </BasicButton>
             </td>
         </tr>
     );

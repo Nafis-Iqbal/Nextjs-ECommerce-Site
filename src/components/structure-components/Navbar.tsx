@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
     }
 
     return (
-        <div className="fixed md:relative top-0 md:flex items-center p-1 w-[100%] h-[70px] md:h-[75px] bg-[#00FF99]">
+        <div className="fixed top-0 z-100 md:flex items-center p-1 w-[100%] h-[55px] md:h-[70px] bg-[#00FF99]">
             <div className="relative flex justify-between items-center w-[100%] h-full bg-inherit">
                 <div className="flex justify-between items-center w-[80%] md:w-[65%] bg-inherit">
                     <button className="hidden md:block w-[20%] ml-5 p-2 text-center bg-[#0F0F0F] md:text-xl lg:text-2xl text-[#00FF99] font-satisfy
@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
                 {/* Small Screen Menu, relatively positioned */}
                 <DropdownMenu menuPosition="top-full -right-1"/>
 
-                <div className="hidden md:flex justify-end md:w-[30%] mr-2 md:mr-4 lg:mr-8 space-x-6 items-center md:text-xl lg:text-2xl text-green-800 font-sans font-semibold bg-inherit">
+                <div className="hidden md:flex justify-end md:w-[30%] mr-2 md:mr-4 lg:mr-8 space-x-6 items-center md:text-lg lg:text-xl text-green-800 font-sans font-semibold bg-inherit">
                     <a className="p-2 scroll-smooth" href="#experience">Language</a>
                     <a className="p-2 scroll-smooth" href="#projectLinks">Special Deals</a>
                     <a className="p-2 scroll-smooth" href="#skills">Cart</a>

@@ -3,8 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 
-import { HorizontalDivider } from "@/components/UIUtilities"
-import DivGap from "@/components/UIUtilities"
+import DivGap from "@/components/custom-elements/UIUtilities"
 import { EditButton } from "@/components/custom-elements/Buttons"
 
 export default function UserDashboard() {
@@ -26,29 +25,29 @@ export default function UserDashboard() {
                     </div>
                     
                     <div className="flex mt-5 items-baseline space-x-3">
-                        <p>Seen as <span className="text-2xl text-green-300">Nafis Iqbal</span></p>
+                        <p>Seen as&nbsp;&nbsp;<span className="text-2xl text-green-300">Nafis Iqbal</span></p>
 
                         <EditButton onClick={() => onEditInfo()}></EditButton>
                     </div>
 
                     <div className="flex mt-5 items-baseline space-x-3">
-                        <p>Role is <span className="text-3xl text-green-500">User</span></p>
+                        <p>Role is&nbsp;&nbsp;<span className="text-3xl text-green-500">User</span></p>
                     </div>
                     
                     <div className="flex mt-5 items-baseline space-x-3">
-                        <p>Email is <span className="text-xl text-green-300">nafisiqbal53@gmail.com</span></p>
+                        <p>Email is&nbsp;&nbsp;<span className="text-xl text-green-300">nafisiqbal53@gmail.com</span></p>
 
                         <EditButton onClick={() => onEditInfo()}></EditButton>
                     </div>
                     
                     <div className="flex mt-5 items-baseline space-x-3">
-                        <p>Born, <span className="text-xl text-green-300">14th December, 1997</span></p>
+                        <p>Born,&nbsp;&nbsp;<span className="text-xl text-green-300">14th December, 1997</span></p>
 
                         <EditButton onClick={() => onEditInfo()}></EditButton>
                     </div>
 
                     <div className="flex mt-5 items-baseline space-x-3">
-                        <p>Lives in <span className="text-xl text-green-300">Dhaka, Bangladesh</span></p>
+                        <p>Lives in&nbsp;&nbsp;<span className="text-xl text-green-300">Dhaka, Bangladesh</span></p>
 
                         <EditButton onClick={() => onEditInfo()}></EditButton>
                     </div>
