@@ -3,6 +3,8 @@ import prismadb from "@/prisma/prismadb";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import {serialize} from "cookie";
+import { errorResponse } from "@/utilities/utilities";
 
 export async function createUser(data: {user_name: string, email: string, password: string, password_confirmation: string}) {
     try {
@@ -38,15 +40,15 @@ export async function createUser(data: {user_name: string, email: string, passwo
             },
         });
 
-        const token = jwt.sign(
-            {
-                user_id: new_user.id,
-                email: new_user.email,
-                role: new_user.role
-            },
-            process.env.JWT_SECRET ?? "abc",
-            {expiresIn: '1hr'}
-        )
+        // const token = jwt.sign(
+        //     {
+        //         user_id: new_user.id,
+        //         email: new_user.email,
+        //         role: new_user.role
+        //     },
+        //     process.env.JWT_SECRET ?? "abc",
+        //     {expiresIn: '1hr'}
+        // )
         
         if(new_user) {
             const {password_hashed, ...sanitized_user} = new_user;
@@ -56,14 +58,36 @@ export async function createUser(data: {user_name: string, email: string, passwo
                     status: "success",
                     message: "User created successfully",
                     data: sanitized_user,
-                    token: token
                 }),
                 { status: 200 }
             );
+
+            // Cookie auth implementation
+            // const cookie = serialize('session-token', token, {
+            //     httpOnly: true,
+            //     secure: process.env.NODE_ENV === 'production',
+            //     sameSite: 'lax',
+            //     path: '/',
+            //     maxAge: 60 * 60, // 1 hour in seconds
+            // });
+
+            // return new Response(
+            //     JSON.stringify({
+            //         status: "success",
+            //         message: "User created successfully",
+            //         data: sanitized_user,
+            //     }),
+            //     { 
+            //         status: 200,
+            //         headers: {
+            //             'Set-Cookie': cookie
+            //         }
+            //     }
+            // );
         }
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }
 
@@ -74,7 +98,8 @@ export async function getAllUsers() {
                 id: true,
                 user_name: true,
                 email: true,
-                role: true
+                role: true,
+                emailVerified: true
             }
         });
 
@@ -88,7 +113,7 @@ export async function getAllUsers() {
         );
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }
 
@@ -126,7 +151,7 @@ export async function getUserDetail(self: boolean, id: string) {
         }
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }
 
@@ -151,7 +176,7 @@ export async function updateUserDetail(id: string, data: {user_name: string}) {
         );
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }
 
@@ -180,6 +205,7 @@ export async function deleteUserDetail(id: string) {
     }
 }
 
+//Probably don't need it.
 export async function loginUser(data: {email: string, password: string}) {
     try {
         const {email, password} = data;
@@ -193,6 +219,17 @@ export async function loginUser(data: {email: string, password: string}) {
                 JSON.stringify({
                     status: "failed",
                     message: "Email doesn't exist.",
+                    data: []
+                }),
+                {status: 400}
+            )
+        }
+
+        if(!existingUser.password_hashed){
+            return new Response(
+                JSON.stringify({
+                    status: "failed",
+                    message: "This account does not have a password. Please sign in with Google/Facebook.",
                     data: []
                 }),
                 {status: 400}
@@ -224,20 +261,32 @@ export async function loginUser(data: {email: string, password: string}) {
 
         if(existingUser) {
             const {password_hashed, ...sanitizedUser} = existingUser;
+
+            const cookie = serialize('session-token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 60 * 60, // 1 hour in seconds
+            });
             
             return new Response(
                 JSON.stringify({
                     status: "success",
                     message: "User logged in successfully",
                     data: sanitizedUser,
-                    token: token
                 }),
-                { status: 200 }
+                { 
+                    status: 200,
+                    headers: {
+                        'Set-Cookie': cookie
+                    }
+                }
             );
         }
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }
 
@@ -246,6 +295,6 @@ export async function logoutUser() {
 
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }

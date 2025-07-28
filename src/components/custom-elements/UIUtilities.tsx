@@ -28,8 +28,7 @@ export const HorizontalDividerWithText = ({className, children} : {className?: s
             <hr className="flex-grow border-t border-gray-300"/>
             <span className="mx-4 text-white">{children}</span>
             <hr className="flex-grow border-t border-gray-300"/>  
-        </div>
-        
+        </div> 
     );
 }
 

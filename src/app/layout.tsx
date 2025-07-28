@@ -1,6 +1,14 @@
+import "./globals.css";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Satisfy, Ubuntu_Mono, Fredericka_the_Great } from "next/font/google";
-import "./globals.css";
+
+import { ClientProviders } from "@/providers/ClientProviders";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+
+import NotificationPopUp from "@/components/modals/NotificationPopUpModal";
+import LoadingModal from "@/components/modals/LoadingContentModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,12 +43,18 @@ export const metadata: Metadata = {
   description: "Modular E-commerce app for learning",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getServerSession(authOptions);
+
   return (
-    <html lang="en" className={`${satisfy.className} ${geistSans.variable} ${geistMono.variable} ${ubuntuMono.variable} ${fredericka.variable} antialiased`}>
+    <html lang="en" className={`${satisfy.className} ${geistSans.variable} ${geistMono.variable} ${ubuntuMono.variable} ${fredericka.variable} antialiased scroll-smooth`}>
       <body>
         <main>
-          {children}
+          <ClientProviders session={session}>
+              <NotificationPopUp/>
+              <LoadingModal/>
+              {children}
+          </ClientProviders>
         </main>
       </body>
     </html>

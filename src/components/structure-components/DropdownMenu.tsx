@@ -25,10 +25,10 @@ const DropdownMenu = ({menuPosition = "top-full right-0"} : {menuPosition?: stri
 
             {isMenuOpen && (
                 <div className={`absolute ${menuPosition} flex flex-col md:hidden space-y-1 items-center text-white opacity-100 font-sans`}>
-                    <a className="p-2 scroll-smooth border-b-1" href="#experience" onClick={() => onMenuNavigate("#experience")}>Language</a>
-                    <a className="p-2 scroll-smooth border-b-1" href="#projectLinks" onClick={() => onMenuNavigate("#projectLinks")}>Special Deals</a>
-                    <a className="p-2 scroll-smooth border-b-1" href="#skills" onClick={() => onMenuNavigate("#skills")}>Cart</a>
-                    <a className="p-2 scroll-smooth border-b-1" href="#interests" onClick={() => onMenuNavigate("#interests")}>Log In</a> 
+                    <a className="p-2  border-b-1" href="#experience" onClick={() => onMenuNavigate("#experience")}>Language</a>
+                    <a className="p-2  border-b-1" href="#projectLinks" onClick={() => onMenuNavigate("#projectLinks")}>Special Deals</a>
+                    <a className="p-2  border-b-1" href="#skills" onClick={() => onMenuNavigate("#skills")}>Cart</a>
+                    <a className="p-2  border-b-1" href="#interests" onClick={() => onMenuNavigate("#interests")}>Log In</a> 
                 </div>         
             )}
         </>

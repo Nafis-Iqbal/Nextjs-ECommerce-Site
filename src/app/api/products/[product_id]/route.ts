@@ -27,6 +27,7 @@ export const PUT = withAdminRole( async (req: Request, {params}: {params: Promis
         return new Response(
             JSON.stringify({
                 status: "failed",
+                message: "Request validation failed.",
                 error: parsed.error.format(),
                 data: []
             }),

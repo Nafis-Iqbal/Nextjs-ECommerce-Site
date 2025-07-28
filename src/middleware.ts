@@ -1,22 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-export async function middleware(req: Request) {
+export async function middleware(req: NextRequest) {
   if(process.env.MIDDLEWARE_DISABLED === 'true'){
     return NextResponse.next();
   }
 
-  const authHeader = req.headers.get('Authorization');
+  // //Bearer Token check
+  // const authHeader = req.headers.get('Authorization');
   
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return new NextResponse('Authentication token is missing or malformed', { status: 401 });
-  }
+  // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  //   return new NextResponse('Authentication token is missing or malformed', { status: 401 });
+  // }
 
-  const token = authHeader.slice(7); // Remove "Bearer " prefix
+  // const token = authHeader.slice(7); // Remove "Bearer " prefix
+
+  const token = req.cookies.get('session-token')?.value;
 
   try {
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET || 'secret'));
+    const { payload } = await jwtVerify(token ?? "", new TextEncoder().encode(process.env.JWT_SECRET || 'secret'));
 
     (req as any).user = payload; // Optionally store user info in the request for later use in handlers
 

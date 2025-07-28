@@ -12,7 +12,7 @@ export default function UserDashboard() {
     }
 
     return (
-        <div className="flex flex-col p-2 font-sans">
+        <section className="flex flex-col p-2 font-sans" id="dashboard_profile">
             <div className="ml-6 flex flex-col space-y-2">
                 <h3 className="text-green-500">Your Profile</h3>
                 <p className="text-green-200">Personalize your account info, preferences.</p>
@@ -85,6 +85,6 @@ export default function UserDashboard() {
             </div>
             
             <DivGap customHeightGap="h-[80px]"/>
-        </div>
+        </section>
     )
 }

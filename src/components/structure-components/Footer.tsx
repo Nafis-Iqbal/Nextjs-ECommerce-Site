@@ -4,7 +4,22 @@ import { Github, Linkedin } from "lucide-react";
 
 import DivGap, {HorizontalDivider, VerticalDivider} from "../custom-elements/UIUtilities";
 
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 const Footer: React.FC = () => {
+    const router = useRouter();
+    const {data: session, status} = useSession();
+
+    const onLogInClick = () => {
+        router.push("/login");
+    }
+
+    const onLogOutClick = () => {
+        signOut({callbackUrl: "/"});
+    }
+
     return (
         <div className="flex flex-col bg-[#00FF99]">
             <DivGap customHeightGap="h-[50px] bg-inherit"/>
@@ -36,11 +51,12 @@ const Footer: React.FC = () => {
 
                 <HorizontalDivider className="md:hidden w-[80%] mx-auto"/>
 
-                <div className="flex flex-col w-full md:w-[50%] text-center md:text-start text-lg text-green-800 font-sans font-semibold bg-inherit">
-                    <a className="md:ml-10 p-2 scroll-smooth" href="#experience">Language</a>
-                    <a className="md:ml-10 p-2 scroll-smooth" href="#projectLinks">Special Deals</a>
-                    <a className="md:ml-10 p-2 scroll-smooth" href="#skills">Cart</a>
-                    <a className="md:ml-10 p-2 scroll-smooth" href="#interests">Log In</a> 
+                <div className="flex flex-col items-start w-full md:w-[50%] text-center md:text-start text-lg text-green-800 font-sans font-semibold bg-inherit">
+                    <a className="md:ml-10 p-2 " href="#experience">Language</a>
+                    <a className="md:ml-10 p-2 " href="#projectLinks">Special Deals</a>
+                    <a className="md:ml-10 p-2 " href="#skills">Cart</a>
+                    {session ? (<a className="md:ml-10 p-2  cursor-pointer" onClick={onLogOutClick}>Log Out</a>) : 
+                    (<button className="md:ml-10 p-2  bg-inherit border-none cursor-pointer" onClick={onLogInClick}>Log In</button>)} 
                 </div>
             </div>
 

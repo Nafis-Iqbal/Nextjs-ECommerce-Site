@@ -47,13 +47,13 @@ export async function getCategoryList() {
 export async function deleteCategory(id: string) {
     try{
         await prismadb.$transaction([
-            prismadb.category.delete({
-                where: {id}
-            }),
             prismadb.productCategory.deleteMany({
                 where: {
                     category_id: id
                 }
+            }),
+            prismadb.category.delete({
+                where: {id}
             })
         ]);
         

@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 
-import { ProductStatus, OrderStatus, ComplaintStatus } from "@/types/enums"
+import { Role, ProductStatus, OrderStatus, ComplaintStatus } from "@/types/enums"
+import { useSession } from "next-auth/react";
 
 import TableLayout from "@/components/layout-elements/TableLayout"
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout"
@@ -10,6 +11,13 @@ import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 import CustomSelect, {CustomTextInput} from "@/components/custom-elements/CustomInputElements"
 
 export default function AdminDashboard() {
+    const {data: session, status} = useSession();
+    
+    if(session?.user.role !== "ADMIN" && session?.user.role !== "MASTER_ADMIN") return (
+        <>
+        </>
+    );
+
     const orderStatusOptions = Object.values(OrderStatus).map(status => ({
         value: status,
         label: status.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
@@ -30,7 +38,7 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="flex flex-col p-2 font-sans">
+        <section className="flex flex-col p-2 font-sans" id="dashboard_admin">
             <div className="ml-6 flex flex-col space-y-2">
                 <h3 className="text-green-500">Your Business</h3>
                 <p className="text-green-200">Manage everything at a glance.</p>
@@ -214,7 +222,7 @@ export default function AdminDashboard() {
             </div>
 
             <HorizontalDivider className="border-green-500 mt-20"/>
-        </div>
+        </section>
     )
 }
 

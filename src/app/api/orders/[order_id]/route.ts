@@ -17,6 +17,7 @@ export const PATCH = withUserData(async (req: NextRequest, {params}: {params: Pr
             return new Response(
                 JSON.stringify({
                     status: "failed",
+                    message: "Request validation failed.",
                     error: parsed.error.format(),
                     data: []
                 }),

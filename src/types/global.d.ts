@@ -6,15 +6,29 @@ import { Status } from '@prisma/client';
 declare global {
   var client: PrismaClient | undefined; 
 
+  interface ApiResponse<T> {
+    message: string;
+    status: "success" | "failure";
+    data: T[];
+  }
+
+  type UserData = {
+    user_name: string;
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  }
+
   interface User {
-    id?: string;
-    user_name?: string;
-    email?: string;
-    role?: Role;
+    id: string;
+    user_name: string;
+    email: string;
+    role: Role;
+    emailVerified: Date;
   }
 
   interface Product {
-    id?: string;
+    id: string;
     title?: string;
     description?: string;
     price?: number;
@@ -22,7 +36,7 @@ declare global {
   }
 
   interface Category {
-    id?: string;
+    id: string;
     title: string;
   }
 

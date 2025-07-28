@@ -12,9 +12,17 @@
     @apply border-[#00FF994D]
   }
 
+  section {
+    scroll-margin-top: 80px; /* Adjust to your navbar height */
+  }
+
   aside {
     @apply bg-gray-800; /* or any Tailwind bg utility */
     @apply border-[#00FF99];
+  }
+
+  th {
+    @apply text-base font-normal py-1;
   }
 
   h1 {

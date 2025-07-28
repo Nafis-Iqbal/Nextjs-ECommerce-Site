@@ -13,7 +13,8 @@ export const POST = withAdminRole(async (req: Request, {}, self_user_data?: {use
     if(!parsed.success){
         return new Response(
             JSON.stringify({
-                status: "Product creation failed.",
+                status: "failed",
+                message: "Request validation failed.",
                 error: parsed.error.format(),
                 data: []
             }),

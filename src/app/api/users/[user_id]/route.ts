@@ -25,6 +25,7 @@ export async function PUT(req: Request, {params} : {params: Promise<{user_id: st
         return new Response(
             JSON.stringify({
                 status: "failed",
+                message: "Request validation failed.",
                 error: parsed.error.format(),
                 data: []
             }),

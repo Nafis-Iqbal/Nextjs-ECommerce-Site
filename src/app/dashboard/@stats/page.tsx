@@ -1,7 +1,7 @@
 export default function StatsDashboard() {
     return (
-        <div className="min-h-screen">
+        <section className="flex flex-col p-2 font-sans min-h-screen" id="dashboard_stats">
 
-        </div>
+        </section>
     )
 }

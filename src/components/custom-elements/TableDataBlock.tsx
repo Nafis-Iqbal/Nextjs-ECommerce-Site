@@ -12,10 +12,10 @@ interface TableBlockProps<T>{
     noContentColSpan?: number;
     onDataUpdate?: (data: any) => void;
     onDataDelete?: (id: string) => void;
-    onClickNavigate?: (id: number) => void;
+    onClickNavigate?: (id: string) => void;
 }
 
-export const TableDataBlock = <T extends {id: number}>({dataList, dataFetchMessage, noContentColSpan, onDataUpdate, onDataDelete, onClickNavigate, isDataLoading} : TableBlockProps<T>) => {    
+export const TableDataBlock = <T extends {id: string}>({dataList, dataFetchMessage, noContentColSpan, onDataUpdate, onDataDelete, onClickNavigate, isDataLoading} : TableBlockProps<T>) => {    
     if(isDataLoading){
         return (
             <tr>
@@ -28,12 +28,12 @@ export const TableDataBlock = <T extends {id: number}>({dataList, dataFetchMessa
     
     if(dataList && dataList.length > 0)
     {
-        if(isCategoryArray(dataList) && onDataUpdate && onDataDelete)
+        if(isCategoryArray(dataList))
         {
             return (
                 <>
                     {(dataList as Category[]).map((data) => (
-                        <CategoryListRow key={data.id} category={data} onUpdate={(category: Category) => onDataUpdate(category)} onDelete={() => onDataDelete(data.id ?? '')}/>
+                        <CategoryListRow key={data.id} category={data} onUpdate={(category: Category) => onDataUpdate?.(category)} onDelete={() => onDataDelete?.(data.id ?? '')}/>
                     ))}
                 </>
             );

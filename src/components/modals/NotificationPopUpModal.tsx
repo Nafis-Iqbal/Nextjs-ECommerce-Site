@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ReactDOM from "react-dom";
@@ -22,12 +24,12 @@ const NotificationPopUp: React.FC = () => {
 
   return ReactDOM.createPortal(
     <div
-      className="fixed z-60 inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed z-60 inset-0 flex items-center justify-center bg-gray-100/50 font-sans"
       onClick={onClose} // Close modal when clicking outside
     >
       {/* Modal Animation */}
       <motion.div
-        className="bg-white p-5 rounded-lg shadow-lg w-80 text-center"
+        className="p-5 rounded-md shadow-lg md:w-120 text-center border-x-2 border-b-4"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.5 }}
@@ -36,7 +38,7 @@ const NotificationPopUp: React.FC = () => {
       >
         <p className="text-lg font-semibold">{notificationState.message}</p>
         <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-4 px-4 py-2 bg-red-400 text-white rounded hover:bg-red-300"
           onClick={onClose}
         >
           Close

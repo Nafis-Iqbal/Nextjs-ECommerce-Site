@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 
+import makeFirstLetterUppercase from "@/utilities/utilities";
+
 import BasicButton from "../custom-elements/Buttons";
 import LoadingSpinnerBlock from "../placeholder-components/LoadingSpinnerBlock";
+import { CustomTextInput } from "../custom-elements/CustomInputElements";
+import TableLayout from "../layout-elements/TableLayout";
 
 const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, onUpdate: (category: Category) => void, onDelete: (category_id:string) => void}) => {
     const [categoryTitle, setCategoryTitle] = useState<string>(category.title);
@@ -25,19 +29,18 @@ const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, o
     }
 
     return(
-        <tr className="bg-pink-200 p-4 rounded-lg w-1/2 text-center border-b">
-            <td className="text-red-900 font-semibold text-sm md:text-base">
-                {category.title}
+        <tr className="text-center border-b-1 border-green-900">
+            <td className="text-white">
+                {makeFirstLetterUppercase(category.title)}
             </td>
             <td className="">
-                <input
-                    type="text"
+                <CustomTextInput
                     id="title"
                     name="title"
                     value={categoryTitle}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className="mt-1 block w-full px-4 py-1 md:py-2 text-black text-sm md:text-base border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full"
                 />
             </td>
             <td>
@@ -49,9 +52,9 @@ const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, o
                     buttonTextColor="white"
                     onClick={() => {
                         onUpdate({id: category.id, title: categoryTitle});
-                        setIsSpinnerActive(true);
+                        //setIsSpinnerActive(true);
                     }}
-                    extraStyle="p-1 bg-emerald-400 hover:bg-emerald-500 text-sm md:text-base"
+                    extraStyle="bg-green-600 hover:bg-green-500 text-sm md:text-base rounded-sm"
                 >
                     Update Tag
                 </BasicButton>
@@ -62,9 +65,9 @@ const CategoryListRow = ({category, onUpdate, onDelete} : {category: Category, o
                     buttonTextColor="white"
                     onClick={() => {
                         onDelete(category.id ?? '');
-                        setIsSpinnerActive(true);
+                        //setIsSpinnerActive(true);
                     }}
-                    extraStyle="p-1 bg-red-500 hover:bg-red-600 text-white text-sm md:text-base"
+                    extraStyle="bg-red-600 hover:bg-red-500 text-white text-sm md:text-base rounded-sm"
                 >
                     Delete Tag
                 </BasicButton>

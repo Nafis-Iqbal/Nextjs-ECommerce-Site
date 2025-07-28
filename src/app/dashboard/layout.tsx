@@ -1,3 +1,8 @@
+"use client";
+
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+
 import Navbar from "@/components/structure-components/Navbar";
 import Footer from "@/components/structure-components/Footer";
 import BottomNavbar from "@/components/structure-components/BottomNavbar";
@@ -19,6 +24,10 @@ export default function DashboardLayout({
     master_admin: React.ReactNode,
     stats: React.ReactNode,
 }){
+    const {data: session, status} = useSession();
+
+    if(!session) redirect("/login");
+
     return (
         <section className="flex flex-col min-h-screen">
             <header className="relative">

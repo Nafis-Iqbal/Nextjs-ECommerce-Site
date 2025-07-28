@@ -64,6 +64,6 @@ export async function updateUserRole(id: string, self_id: string, data: {role: R
         );
     }
     catch(error) {
-        return new Response("Internal server error", {status: 500});
+        return errorResponse(error);
     }
 }

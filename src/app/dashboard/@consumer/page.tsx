@@ -25,7 +25,7 @@ export default function ConsumerDashboard() {
     }
 
     return (
-        <div className="flex flex-col p-2 font-sans">
+        <section className="flex flex-col p-2 font-sans" id="dashboard_consumer">
             <div className="ml-6 flex flex-col space-y-2">
                 <h3 className="text-green-500">Your Transactions</h3>
                 <p className="text-green-200">All your shopping records, in one place.</p>
@@ -121,7 +121,7 @@ export default function ConsumerDashboard() {
             </div>
             
             <HorizontalDivider className="border-green-500 mt-20"/>
-        </div>
+        </section>
     )
 }
 

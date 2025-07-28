@@ -1,13 +1,58 @@
 "use client";
 
-import DivGap, {HorizontalDividerWithText, Logo} from "@/components/custom-elements/UIUtilities"
-import { signIn } from "next-auth/react";
 import Image from 'next/image';
 import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useCreateUserRQ } from "@/services/userApi";
+
+import DivGap, {HorizontalDividerWithText, Logo} from "@/components/custom-elements/UIUtilities"
 
 export default function LoginPage() {
     const [isSignUpPage, setIsSignUpPage] = useState<boolean>(false);
     const [isEmailSignUp, setIsEmailSignUp] = useState<boolean>(false);
+    const [signInFailureWarning, setSignInFailureWarning] = useState<boolean>(false);
+
+    const [formData, setFormData] = useState<UserData>({
+        user_name: '',
+        email: '',
+        password: '',
+        passwordConfirmation: ''
+    });
+
+    const {mutate: createUserMutate} = useCreateUserRQ(
+        (responseData) => {
+            if(responseData.status === "success")
+            {
+                signIn("credentials",{
+                    email: formData.email,
+                    password: formData.password
+                });
+            }
+            else{
+                onSignUpFailure();
+            }
+        },
+        () => {
+            onSignUpFailure();
+        }
+    );
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const{name, value} = e.target;
+       
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    const onAccountSignUp = () => {
+        createUserMutate(formData);
+    }
+
+    const onSignUpFailure = () => {
+        setSignInFailureWarning(true);
+    }
 
     return (
         <div className="flex flex-col items-left min-h-[60vh] min-w-[50vh] border-x-4 border-b-4 border-t-2 shadow-[0_5px_20px_#00FF99] rounded-xl text-white">
@@ -35,36 +80,42 @@ export default function LoginPage() {
                 {
                     isSignUpPage ? (
                         isEmailSignUp ? (
-                            <div className="flex flex-col space-y-1 mb-2">
-                                <p className="text-lg">Email</p>
+                            <form 
+                                className="flex flex-col space-y-1 mb-2" 
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    onAccountSignUp();
+                                }}
+                            >
+                                <label className="text-lg">Email</label>
 
                                 <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
-                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="text"
+                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="text" name="email" onChange={handleChange}
                                 />
 
-                                <p className="text-lg">User Name</p>
+                                <label className="text-lg">User Name</label>
 
                                 <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
-                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="text"
+                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="text" name="user_name" onChange={handleChange}
                                 />
 
-                                <p className="text-lg">Password</p>
+                                <label className="text-lg">Password</label>
 
                                 <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
-                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="password"
+                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="password" name="password" onChange={handleChange}
                                 />
 
-                                <p className="text-lg">Confirm Password</p>
+                                <label className="text-lg">Confirm Password</label>
 
                                 <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
                                     focus:outline-none focus:ring-2 focus:ring-green-600" 
-                                    type="password" name="confirmPassword" placeholder="Confirm Password" autoComplete="new-password"
+                                    type="password" name="passwordConfirmation" placeholder="Confirm Password" autoComplete="new-password" onChange={handleChange}
                                 />
 
-                                <button className="w-full p-2 mt-5 mx-auto bg-green-400 rounded-sm">Create Account</button>
+                                <button className="w-full p-2 mt-5 mx-auto bg-green-600 hover:bg-green-500 rounded-sm" type="submit">Create Account</button>
 
                                 <HorizontalDividerWithText className="mt-5">OR</HorizontalDividerWithText>
-                            </div>
+                            </form>
                         ) : (
                             <>
                                 <div className="flex flex-col space-y-2 items-center">
@@ -86,11 +137,24 @@ export default function LoginPage() {
                         )
                     ) : (
                         <>
-                            <p className="text-xl">Email</p>
+                            <div className="flex flex-col space-y-2 justify-center">
+                                <label className="text-lg">Email</label>
 
-                            <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
-                                focus:outline-none focus:ring-2 focus:ring-green-600" type="text"/>
-                            <button className="w-full p-2 mx-auto bg-green-400 rounded-sm">Proceed with Email</button>
+                                <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
+                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="text" name="email" onChange={handleChange}/>
+
+                                <label className="text-lg">Password</label>
+
+                                <input className="bg-white border border-gray-300 px-4 py-2 font-sans placeholder-gray-400 text-gray-800 rounded-md
+                                    focus:outline-none focus:ring-2 focus:ring-green-600" type="password" name="password" onChange={handleChange}/>
+
+                                {signInFailureWarning && (<div className="text-red-600">An error occured during sign in. Please try again.</div>)}
+
+                                <button className="w-full p-2 mx-auto bg-green-600 hover:bg-green-500 rounded-sm" onClick={() => signIn("credentials", {
+                                    email: formData.email,
+                                    password: formData.password
+                                })}>Proceed with Email</button>
+                            </div>
 
                             <HorizontalDividerWithText className="mt-5">OR</HorizontalDividerWithText>
                             

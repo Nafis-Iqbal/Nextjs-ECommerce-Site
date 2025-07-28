@@ -35,10 +35,15 @@ enum Priority {
 
 model User {
   id String @id @default(uuid()) @map("_id")
-  user_name String 
+  user_name String? @default("Guest_User")
+  name String?
   email String @unique
-  password_hashed String
+  password_hashed String? 
   role Role @default(USER)
+  image String?
+  spent Int
+  earned Int
+  emailVerified DateTime? @default(now())
 
   user_address Address[]
   products Product[]
@@ -49,7 +54,25 @@ model User {
   sellerOrderSeller SellerOrder[] @relation("SellerOrderSeller")
   notifications Notification[]
   accounts Account[]
-  sessions Session[]
+}
+
+model Account {
+  id String @id @default(uuid()) @map("_id")
+  userId String
+  provider String
+  providerAccountId String
+  type String
+  refresh_token String? 
+  access_token String? 
+  expires_at Int?
+  id_token String? 
+  scope String?
+  token_type String?
+  session_state String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
 }
 
 model Product {
@@ -196,41 +219,4 @@ model Notification {
 
   @@unique([id, user_id])
   user User @relation(fields: [user_id], references: [id])
-}
-
-model Account {
-  id String @id @default(uuid()) @map("_id")
-  userId String
-  provider String
-  providerAccountId String
-  type String
-  refresh_token String? 
-  access_token String? 
-  expires_at Int?
-  id_token String? 
-  scope String?
-  token_type String?
-  session_state String?
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id String @id @default(uuid()) @map("_id")
-  sessionToken String   @unique
-  userId String
-  expires DateTime
-
-  user User @relation(fields: [userId], references: [id])
-}
-
-model VerificationToken {
-  id String   @id @default(uuid()) @map("_id")
-  identifier String
-  token String @unique
-  expires DateTime
-
-  @@unique([identifier, token])
 }

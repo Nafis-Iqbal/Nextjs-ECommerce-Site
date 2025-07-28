@@ -74,8 +74,6 @@ const SidebarMenuWithRef = forwardRef<HTMLDivElement, SidebarMenuProps>(({classN
                 <button className="w-[100%] p-2 hover:bg-gray-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-pink-100" disabled>Settings</button>
             </li>
         </ul>
-
-        <button className="display:block w-full border-b-4 hover:bg-emerald-400 p-3 text-xl text-center text-pink-100" >Logout</button>
     </div>
   );
 });

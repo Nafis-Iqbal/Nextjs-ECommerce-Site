@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import BasicButton from "../custom-elements/Buttons";
 import DropdownMenu from "./DropdownMenu";
 
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 const Navbar: React.FC = () => {
+    const router = useRouter();
+    const {data: session, status} = useSession();
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const onMenuToggle = () => {
@@ -14,6 +21,14 @@ const Navbar: React.FC = () => {
 
     const onMenuNavigate = (navigateTo: string) => {
         setIsMenuOpen(false);
+    }
+
+    const onLogInClick = () => {
+        router.push("/login");
+    }
+
+    const onLogOutClick = () => {
+        signOut({callbackUrl: "/"});
     }
 
     return (
@@ -36,10 +51,11 @@ const Navbar: React.FC = () => {
                 <DropdownMenu menuPosition="top-full -right-1"/>
 
                 <div className="hidden md:flex justify-end md:w-[30%] mr-2 md:mr-4 lg:mr-8 space-x-6 items-center md:text-lg lg:text-xl text-green-800 font-sans font-semibold bg-inherit">
-                    <a className="p-2 scroll-smooth" href="#experience">Language</a>
-                    <a className="p-2 scroll-smooth" href="#projectLinks">Special Deals</a>
-                    <a className="p-2 scroll-smooth" href="#skills">Cart</a>
-                    <a className="p-2 scroll-smooth" href="#interests">Log In</a> 
+                    <a className="p-2 " href="#experience">Language</a>
+                    <a className="p-2 " href="#projectLinks">Special Deals</a>
+                    <Link className="p-2 " href="/cart">Cart</Link>
+                    {!session ? (<a className="p-2 " href="/login">Log In</a>) : 
+                    (<a className="p-2 " href="/dashboard#dashboard_profile">Profile</a>)} 
                 </div>
             </div>
         </div>
