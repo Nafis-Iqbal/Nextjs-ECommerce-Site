@@ -32,8 +32,16 @@ export async function POST(req: Request)
 //get all users
 export async function GET(req: Request)
 {
+    const { searchParams } = new URL(req.url);
+  
+    const filters: Record<string, string> = {};
+
+    for (const [key, value] of searchParams.entries()) {
+        if (value !== "") filters[key] = value;
+    }
+
     try {
-        return await UserController.getAllUsers();
+        return await UserController.getUsers(filters);
     }
     catch(error) {
         return errorResponse(error);

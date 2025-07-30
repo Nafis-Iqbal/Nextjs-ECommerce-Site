@@ -3,7 +3,7 @@ import { isCategoryArray } from "@/utilities/utilities";
 
 import LoadingSpinner from "../placeholder-components/LoadingAnimationDiv";
 import CategoryListRow from "../data-elements/CategoryListRow";
-import { NoContentTableRow } from "../placeholder-components/NoContentDiv";
+import { NoContentTableRow } from "../placeholder-components/NoContentTableRow";
 
 interface TableBlockProps<T>{
     dataList: T[];

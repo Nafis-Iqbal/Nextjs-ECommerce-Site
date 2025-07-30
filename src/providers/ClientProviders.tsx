@@ -7,7 +7,7 @@ import store from "@/global-state-context/globalStateStore";
 import { SessionProvider } from "next-auth/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { queryClient } from "@/services/api/apiInstance";
+import { queryClient } from "@/services/apiInstance";
 
 export function ClientProviders({ children, session }: { children: ReactNode, session: any; }) {
   

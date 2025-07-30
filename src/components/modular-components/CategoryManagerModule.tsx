@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { queryClient } from '@/services/api/apiInstance';
+import { queryClient } from '@/services/apiInstance';
 import { CategoryApi } from '@/services/api';
 import { useGlobalUI } from '../../hooks/state-hooks/globalStateHooks';
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { apiFetch } from "./apiInstance";
+import { apiFetch } from "../apiInstance";
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 async function createCategory(category: Category) {

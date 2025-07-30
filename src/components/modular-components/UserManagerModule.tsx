@@ -1,16 +1,54 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react"
 import { Role, UserStatus, PaymentStatus } from "@/types/enums"
 import { UserApi } from "@/services/api"
+import { filterUsersSchema } from "@/validators/userValidators"
+import { queryClient } from "@/services/apiInstance"
 
 import TableLayout from "../layout-elements/TableLayout"
 import FilterSectionLayout from "../layout-elements/FilterSectionLayout"
-import CustomSelect from "../custom-elements/CustomInputElements"
+import { CustomSelectInput } from "../custom-elements/CustomInputElements"
 import { CustomTextInput } from "../custom-elements/CustomInputElements"
 import { HorizontalDivider } from "../custom-elements/UIUtilities"
+import { NoContentTableRow } from "../placeholder-components/NoContentTableRow"
+
+type UserFilter = {
+    role: Role;
+    user_status: UserStatus;
+    payment_status: PaymentStatus;
+    user_name: string;
+    email: string;
+    city: string;
+    minimum_spent: number;
+    minimum_order_count: number;
+}
+
+const defaultFilterValues: UserFilter = {
+    role: Role.USER, 
+    user_status: UserStatus.ACTIVE,
+    payment_status: PaymentStatus.PAID,
+    user_name: '',
+    email: '',
+    city: '',
+    minimum_spent: 0,
+    minimum_order_count: 0
+}
 
 export const UserManagerModule = () => {
-    const {data: usersList, isSuccess: isUsersSuccess, isError: isUsersError} = UserApi.useGetUsersRQ();
+    const [filters, setFilters] = useState<Partial<UserFilter>>();
+    const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+    const [queryString, setQueryString] = useState<string>();
+    const {data: usersList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchUserData} = UserApi.useGetUsersRQ(queryString);
 
-    const userRoleOptions = Object.values(UserStatus).map(role => ({
+    useEffect(() => {
+        refetchUserData();
+    }, [queryString]);
+
+    useEffect(() => {
+        setFilters(defaultFilterValues);
+    }, [])
+
+    const userRoleOptions = Object.values(Role).map(role => ({
         value: role,
         label: role.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
     }));
@@ -25,13 +63,47 @@ export const UserManagerModule = () => {
         label: status.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
     }));
 
-    const filterByUserRole = (role: string) => {
+    const onSubmitFilterUserSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
+        const query = buildUserQueryString(filters);
+        queryClient.invalidateQueries({queryKey: ["users"]});
 
+        setQueryString(query);
     }
 
-    const filterByPaymentStatus = (role: string) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
 
-    }
+        const numericFields = new Set(["minimum_spent", "minimum_order_count"]);
+
+        let parsedValue: string | number | undefined;
+
+        if (numericFields.has(name)) {
+            const noLeadingZeros = value.replace(/^0+(?=\d)/, '');
+
+            parsedValue = noLeadingZeros === '' ? undefined : Number(noLeadingZeros);
+        } else {
+            parsedValue = value || undefined;
+        }
+        console.log(filters?.user_status + " " + parsedValue + " " + name + " " + value);
+        setFilters((prev) => ({
+            ...prev,
+            [name]: parsedValue
+        }));
+
+        const updatedData = { ...filters, [name]: parsedValue };
+        
+        const result = filterUsersSchema.safeParse(updatedData);
+        if (!result.success) {
+            const key = name as keyof typeof result.error.formErrors.fieldErrors;
+            const fieldError = result.error.formErrors.fieldErrors[key]?.[0];
+
+            setErrors((prev) => ({ ...prev, [name]: fieldError }));
+        } else {
+            setErrors((prev) => ({ ...prev, [name]: undefined }));
+        }
+    };
 
     return (
         <div className="flex flex-col mt-5">
@@ -50,73 +122,109 @@ export const UserManagerModule = () => {
                 </div>
                 <div className="flex flex-col border-1 border-green-800">
                     {
+                        isFetchLoading ? (<NoContentTableRow displayMessage="Loading Data"  tdColSpan={1}/>) :
+                        isFetchError ? (<NoContentTableRow displayMessage="An error occured"  tdColSpan={1}/>) :
+
+                        (usersList?.data && usersList?.data.length <=0) ? (<NoContentTableRow displayMessage="No users found" tdColSpan={1}/>):
+
                         usersList?.data?.map((user, index) => (
-                            <UserListTableRow key={user.id} id={index + 1} user_name={user.user_name} role={user.role} email={user.email} spent={5000} joined={user.emailVerified ?? new Date(2025, 0, 31)}/>
+                            <UserListTableRow 
+                                key={user.id} 
+                                id={index + 1} 
+                                user_name={user.user_name} 
+                                role={user.role} 
+                                email={user.email} 
+                                spent={5000} 
+                                joined={user.emailVerified ?? new Date(2025, 0, 31)}
+                            />
                         ))
                     }
                 </div>
             </TableLayout>
 
-            <FilterSectionLayout className="mr-5">
+            <FilterSectionLayout className="mr-5" onSubmit={onSubmitFilterUserSearch}>
                 <div className="flex justify-left space-x-15">
-                    <div className="flex flex-col space-y-1">
-                        <label>Role</label>
-                        <CustomSelect
-                            options={userRoleOptions}
-                            value="User"
-                            onChange={(value) => filterByUserRole(value)}
-                            className="bg-gray-600"
-                        />
-                    </div>
+                    <CustomSelectInput
+                        options={userRoleOptions}
+                        onChange={handleChange}
+                        value={filters?.role}
+                        className="bg-gray-600"
+                        name="role"
+                        label="Role"
+                    />
+
+                    <CustomSelectInput
+                        options={userStatusOptions}
+                        onChange={handleChange}
+                        value={filters?.user_status}
+                        className="bg-gray-600"
+                        name="user_status"
+                        label="User Status"
+                    />
+
+                    <CustomSelectInput
+                        options={paymentStatusOptions}
+                        onChange={handleChange}
+                        value={filters?.payment_status}
+                        className="bg-gray-600"
+                        name="payment_status"
+                        label="Payment Status"
+                    />
+                </div>
+
+                <div className="flex justify-left space-x-6">
+                    <CustomTextInput 
+                        placeholderText="Enter user name"
+                        onChange={handleChange}
+                        value={filters?.user_name}
+                        name="user_name"
+                        label="User Name"
+                    />
+
+                    <CustomTextInput 
+                        placeholderText="Enter user email"
+                        onChange={handleChange}
+                        value={filters?.email}
+                        name="email"
+                        label="Email"
+                        error={errors.email}
+                    />
+                </div>
+
+                <div className="flex justify-left space-x-6">
+                    <CustomTextInput 
+                        placeholderText="Enter City"
+                        onChange={handleChange}
+                        value={filters?.city}
+                        name="city"
+                        label="City"
+                    />
+
+                    <CustomTextInput 
+                        type="number"
+                        placeholderText="Enter minimum Spent"
+                        onChange={handleChange}
+                        value={filters?.minimum_spent ?? 0}
+                        name="minimum_spent"
+                        label="Minimum Spent"
+                        error={errors.minimum_spent}
+                    />
+
+                    <CustomTextInput 
+                        type="number"
+                        placeholderText="Enter minimum Order"
+                        onChange={handleChange}
+                        value={filters?.minimum_order_count ?? 0}
+                        name="minimum_order_count"
+                        label="Minimum Order Count"
+                        error={errors.minimum_order_count}
+                    />
+
+                    <button className="flex self-end items-center p-2 ml-10 h-[60%] bg-green-700 hover:bg-green-600
+                     text-white text-lg rounded-sm" type="submit">Filter Users</button>
                     
-                    <div className="flex flex-col space-y-1">
-                        <label>Status</label>
-                        <CustomSelect
-                            options={userStatusOptions}
-                            value="Active"
-                            onChange={(value) => filterByUserRole(value)}
-                            className="bg-gray-600"
-                        />
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <label>Payment Status</label>
-                        <CustomSelect
-                            options={paymentStatusOptions}
-                            value="User"
-                            onChange={(value) => filterByPaymentStatus(value)}
-                            className="bg-gray-600"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex justify-left space-x-6">
-                    <div className="flex flex-col space-y-1">
-                        <label>User Name</label>
-                        <CustomTextInput placeholderText="Enter user name"/>
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <label>Email</label>
-                        <CustomTextInput placeholderText="Enter user email"/>
-                    </div>
-                </div>
-
-                <div className="flex justify-left space-x-6">
-                    <div className="flex flex-col space-y-1">
-                        <label>City</label>
-                        <CustomTextInput placeholderText="Enter City"/>
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <label>Minimum Spent</label>
-                        <CustomTextInput placeholderText="Enter minimum Spent"/>
-                    </div>
-
-                    <div className="flex flex-col space-y-1">
-                        <label>Order Count</label>
-                        <CustomTextInput placeholderText="Enter minimum Order"/>
-                    </div>
+                    <button className="flex self-end items-center p-2 ml-10 h-[60%] bg-green-700 hover:bg-green-600
+                     text-white text-lg rounded-sm" type="button" onClick={() => {setFilters(defaultFilterValues); setErrors({}); setQueryString("")}}>Reset Filters</button>
                 </div>
             </FilterSectionLayout>
 
@@ -140,4 +248,25 @@ const UserListTableRow = ({
             <p className="w-[15%]">{new Date(joined).toDateString()}</p>
         </div>
     )
+}
+
+export function buildUserQueryString(filters: Partial<UserFilter> | undefined | null) {
+    if(!filters){
+        return "";
+    }
+
+    const params = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+        if (
+        typeof value === "string" ||
+        typeof value === "number"
+        ) {
+        if (value !== "") {
+            params.append(key, String(value));
+        }
+        }
+    });
+
+    return params.toString();
 }

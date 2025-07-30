@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:users": "tsx src/prisma/scripts/migrate-existing-users.ts",
+    "migrate:products": "tsx src/prisma/scripts/migrate-existing-products.ts"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -45,6 +47,8 @@
     "eslint-config-next": "15.3.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   },
   "prisma": {

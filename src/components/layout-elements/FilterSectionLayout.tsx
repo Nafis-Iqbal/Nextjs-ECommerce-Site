@@ -1,9 +1,9 @@
-const FilterSectionLayout = ({children, className} : {children: React.ReactNode, className?: string}) => {
+const FilterSectionLayout = ({children, className, onSubmit} : {children: React.ReactNode, onSubmit: (e: React.FormEvent<HTMLFormElement>) => void, className?: string,}) => {
     return (
-        <div className={`flex flex-col mt-6 space-y-3 ${className}`}>
+        <form className={`flex flex-col mt-6 space-y-3 ${className}`} onSubmit={onSubmit}>
             <h4 className="text-green-300">Filters</h4>
             {children}
-        </div>
+        </form>
     )
 }
 

@@ -32,10 +32,18 @@ export const POST = withAdminRole(async (req: Request, {}, self_user_data?: {use
 
 export async function GET(req: NextRequest)
 {
+    const { searchParams } = new URL(req.url);
+  
+    const filters: Record<string, string> = {};
+
+    for (const [key, value] of searchParams.entries()) {
+        if (value !== "") filters[key] = value;
+    }
+
     try {
         const user_id = req.nextUrl.searchParams.get("user_id");
 
-        return await ProductController.getProductList({user_id});
+        return await ProductController.getProducts({user_id, filters});
     }
     catch(error) {
         return errorResponse(error);

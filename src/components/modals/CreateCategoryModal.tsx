@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { CategoryApi } from '@/services/api';
-import { queryClient } from '@/services/api/apiInstance';
+import { queryClient } from '@/services/apiInstance';
 import { CustomTextInput } from '../custom-elements/CustomInputElements';
 
 export default function CreateCategoryModal({isOpen, onClose, onSubmit, onSuccess, onFailure}: CreateCategoryModalProps){

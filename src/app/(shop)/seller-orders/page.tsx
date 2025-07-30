@@ -4,7 +4,7 @@ import { OrderStatus } from "@/types/enums";
 
 import TableLayout from "@/components/layout-elements/TableLayout"
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout";
-import CustomSelect from "@/components/custom-elements/CustomInputElements";
+import { CustomSelectInput } from "@/components/custom-elements/CustomInputElements";
 import {SellerOrderViewListTableRow} from "@/components/data-elements/DataTableRowElements"
 
 export default function SellerOrderHistoryPage() {
@@ -45,7 +45,7 @@ export default function SellerOrderHistoryPage() {
                         <div className="flex flex-col space-y-1 w-full">
                             <label>Order Status</label>
                             <div className="flex justify-between">
-                                <CustomSelect
+                                <CustomSelectInput
                                     options={orderStatusOptions}
                                     value="Active"
                                     onChange={(value) => filterByOrderStatus(value)}

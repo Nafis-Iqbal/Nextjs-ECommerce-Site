@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useCreateUserRQ } from "@/services/userApi";
+import { UserApi } from '@/services/api';
 
 import DivGap, {HorizontalDividerWithText, Logo} from "@/components/custom-elements/UIUtilities"
 
@@ -19,7 +19,7 @@ export default function LoginPage() {
         passwordConfirmation: ''
     });
 
-    const {mutate: createUserMutate} = useCreateUserRQ(
+    const {mutate: createUserMutate} = UserApi.useCreateUserRQ(
         (responseData) => {
             if(responseData.status === "success")
             {

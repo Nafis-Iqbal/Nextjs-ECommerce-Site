@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import TableLayout from "@/components/layout-elements/TableLayout"
 import {OrderViewListTableRow} from "@/components/data-elements/DataTableRowElements"
 import { OrderStatus } from "@/types/enums"
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout"
-import CustomSelect from "@/components/custom-elements/CustomInputElements"
+import { CustomSelectInput } from "@/components/custom-elements/CustomInputElements"
 
 export default function OrderHistoryPage() {
     const orderStatusOptions = Object.values(OrderStatus).map(status => ({
@@ -12,7 +13,7 @@ export default function OrderHistoryPage() {
         label: status.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
     }));
 
-    const filterByOrderStatus = (status: string) => {
+    const filterByOrderStatus = () => {
 
     }
 
@@ -37,15 +38,15 @@ export default function OrderHistoryPage() {
                     </div>
                 </TableLayout>
 
-                <FilterSectionLayout className="mr-5">
+                <FilterSectionLayout className="mr-5" onSubmit={filterByOrderStatus}>
                     <div className="flex justify-left space-x-15">                   
                         <div className="flex flex-col space-y-1 w-full">
                             <label>Order Status</label>
                             <div className="flex justify-between">
-                                <CustomSelect
+                                <CustomSelectInput
                                     options={orderStatusOptions}
                                     value="Active"
-                                    onChange={(value) => filterByOrderStatus(value)}
+                                    onChange={() => filterByOrderStatus()}
                                     className="bg-gray-600"
                                 />
 

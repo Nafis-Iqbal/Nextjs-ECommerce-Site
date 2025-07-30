@@ -8,7 +8,7 @@ import { OrderStatus } from "@/types/enums"
 import TableLayout from "@/components/layout-elements/TableLayout"
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout"
 import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
-import CustomSelect, { CustomTextInput } from "@/components/custom-elements/CustomInputElements"
+import { CustomSelectInput, CustomTextInput } from "@/components/custom-elements/CustomInputElements"
 
 export default function ConsumerDashboard() {
     const orderStatusOptions = Object.values(OrderStatus).map(status => ({
@@ -78,7 +78,7 @@ export default function ConsumerDashboard() {
                             <div className="flex flex-col space-y-1 w-full">
                                 <label>Order Status</label>
                                 <div className="flex justify-between">
-                                    <CustomSelect
+                                    <CustomSelectInput
                                         options={orderStatusOptions}
                                         value="Active"
                                         onChange={(value) => filterByOrderStatus(value)}

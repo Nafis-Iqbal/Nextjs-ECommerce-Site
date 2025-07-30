@@ -1,7 +1,7 @@
 import { useAuthDispatch } from "../state-hooks";
 import { logout } from "../../global-state-context/authSlice";
 import {useRouter} from "next/navigation";
-import { queryClient } from "../../Services/API/ApiInstance";
+import { queryClient } from "../../services/apiInstance";
 
 const useLogout = () => {
     const dispatch = useAuthDispatch(); // ✅ Call inside another hook

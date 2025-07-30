@@ -91,32 +91,6 @@ export async function createUser(data: {user_name: string, email: string, passwo
     }
 }
 
-export async function getAllUsers() {
-    try {
-        const users = await prismadb.user.findMany({
-            select: {
-                id: true,
-                user_name: true,
-                email: true,
-                role: true,
-                emailVerified: true
-            }
-        });
-
-        return new Response(
-            JSON.stringify({
-                status: "success",
-                message: "Users retrieved successfully",
-                data: users
-            }),
-            { status: 200 }
-        );
-    }
-    catch(error) {
-        return errorResponse(error);
-    }
-}
-
 export async function getUserDetail(self: boolean, id: string) {
     try {
         const user_detail = await prismadb.user.findUnique({
@@ -203,6 +177,73 @@ export async function deleteUserDetail(id: string) {
     catch(error) {
         return new Response("Internal server error, or trying to delete Master Admin", {status: 500});
     }
+}
+
+export async function getUsers(filters: Record<string, string>) {
+    try {
+        const where = buildPrismaUserFilter(filters);
+
+        const users = await prismadb.user.findMany({
+            where,
+            select: {
+                id: true,
+                user_name: true,
+                email: true,
+                role: true,
+                emailVerified: true
+            }
+        });
+
+        return new Response(
+            JSON.stringify({
+                status: "success",
+                message: "Users retrieved successfully",
+                data: users
+            }),
+            { status: 200 }
+        );
+    }
+    catch(error) {
+        return errorResponse(error);
+    }
+}
+
+export function buildPrismaUserFilter(filters: Record<string, string>) {
+    const where: any = {};
+
+    if (filters.user_name) {
+        where.user_name = {
+            contains: filters.user_name,
+            mode: "insensitive"
+        };
+    }
+
+    if (filters.role) where.role = filters.role;
+
+    if (filters.email) {
+        where.email = {
+            contains: filters.email,
+            mode: "insensitive"
+        };
+    }
+
+    if (filters.emailVerified === "true" || filters.emailVerified === "false") {
+        where.emailVerified = filters.emailVerified === "true";
+    }
+
+    if (filters.minimum_spent) {
+        where.spent = {
+            gte: Number(filters.minimum_spent)
+        };
+    }
+
+    if (filters.minimum_order_count) {
+        where.orderCount = {
+            gte: Number(filters.minimum_order_count)
+        };
+    }
+
+    return where;
 }
 
 //Probably don't need it.

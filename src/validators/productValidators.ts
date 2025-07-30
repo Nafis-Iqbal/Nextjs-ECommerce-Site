@@ -1,4 +1,5 @@
 import {z} from "zod";
+import { ProductStatus } from "@/types/enums";
 
 export const createProductSchema = z.object({
     title: z.string().min(3),
@@ -14,4 +15,12 @@ export const updateProductSchema = z.object({
 
 export const filterProductSchema = z.object({
     categories: z.array(z.string())
+});
+
+export const filterProductsSchema = z.object({
+    productStatus: z.nativeEnum(ProductStatus).optional(),
+    vendor_name: z.string().optional(),
+    minimum_earned: z.number().optional(),
+    minimum_units_sold: z.number().optional(),
+    minimum_rating: z.number().optional(),
 });

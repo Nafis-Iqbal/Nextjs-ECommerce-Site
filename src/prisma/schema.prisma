@@ -13,10 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserStatus {
+  ACTIVE 
+  BANNED 
+  RESTRICTED 
+}
+
 enum Role {
   MASTER_ADMIN
   ADMIN
   USER
+}
+
+enum Priority {
+  NORMAL
+  URGENT
 }
 
 enum Status {
@@ -28,9 +39,29 @@ enum Status {
   COMPLETED
 }
 
-enum Priority {
-  NORMAL
-  URGENT
+enum OrderItemStatus {
+  SUCCESS
+  FAILED
+}
+
+enum PaymentStatus {
+  UNPAID 
+  PAID 
+}
+
+enum ProductStatus {
+  IN_STOCK 
+  OUT_OF_STOCK 
+  SUSPENDED 
+  BANNED
+}
+
+enum ComplaintStatus {
+  PENDING 
+  UNDER_REVIEW 
+  UNSOLVED 
+  SOLVED 
+  CLOSED 
 }
 
 model User {
@@ -40,9 +71,12 @@ model User {
   email String @unique
   password_hashed String? 
   role Role @default(USER)
+  userStatus UserStatus @default(ACTIVE)
+  paymentStatus PaymentStatus @default(PAID)
   image String?
-  spent Int
-  earned Int
+  spent Int @default(0)
+  earned Int @default(0)
+  orderCount Int @default(0)
   emailVerified DateTime? @default(now())
 
   user_address Address[]
@@ -81,7 +115,11 @@ model Product {
   description String
   price Int
   quantity Int @default(1)
-
+  rating Float @default(0)
+  unitsSold Int @default(0)
+  earned Int @default(0)
+  productStatus ProductStatus @default(IN_STOCK)
+  
   user_id String
 
   @@unique([id, user_id])

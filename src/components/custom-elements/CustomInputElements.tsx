@@ -1,46 +1,51 @@
-import { ChangeEvent } from "react";
 import React, {forwardRef} from "react";
 
 type CustomInputProps = {
-  id?: string;
-  name?: string;
-  value?: string;
-  required?: boolean;
   className?: string;
   placeholderText?: string;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  labelStyle?: string; 
+  error?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>
-
-export const CustomTextArea = ({id, name, value, className, placeholderText} : CustomInputProps) => {
-    return (
-        <textarea className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
-            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} id={id} name={name} value={value} placeholder={placeholderText}
-        />
-    )
-}
 
 export const CustomTextInput = forwardRef<HTMLInputElement, CustomInputProps>((props, ref) => {
     const {
-      id,
-      name,
-      value,
-      required = false,
       className,
       placeholderText,
-      onChange,
+      label,
+      labelStyle,
+      error,
       ...rest
     } = props;
 
     return (
+      <div className="relative flex flex-col space-y-1 group">
+        {label && <label className={labelStyle}>{label}</label>}
+        
         <input className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
-            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} id={id} name={name} value={value} 
+            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
             ref={ref}
-            type="text" placeholder={placeholderText} onChange={onChange} required={required}
+            { ...rest }
         />
+
+        {error && (
+          <div className="absolute right-0 mt-1 text-xs text-white bg-red-500 p-1 rounded shadow z-10">
+            {error}
+          </div>
+        )}
+      </div>
     )
 })
 
 CustomTextInput.displayName = "CustomTextInput";
+
+export const CustomTextArea = ({className, placeholderText} : CustomInputProps) => {
+    return (
+        <textarea className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
+            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
+        />
+    )
+}
 
 type Option = {
   label: string;
@@ -49,29 +54,47 @@ type Option = {
 
 type CustomSelectProps = {
   options: Option[];
-  value: string;
   defaultSelectText?: string;
-  onChange: (value: string) => void;
   className?: string;
-};
+  label?: string;
+  labelStyle?: string;
+  error?: string;
+} & React.SelectHTMLAttributes<HTMLSelectElement>;
 
-export default function CustomSelect({
-  options,
-  value,
-  defaultSelectText = "-- Select an input --",
-  onChange,
-  className = "",
-}: CustomSelectProps) {
+export const CustomSelectInput = forwardRef<HTMLSelectElement, CustomSelectProps>((props, ref) => {
+  const {
+    options,
+    defaultSelectText = "-- Select an input --",
+    className = "",
+    label,
+    error,
+    labelStyle,
+    ...rest
+  } = props;
+
   return (
-    <select
-      onChange={(e) => onChange(e.target.value)}
-      className={`p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-green-500 ${className}`}
-    >
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
+    <div className="relative flex flex-col space-y-1 group">
+      {label && <label className={labelStyle}>{label}</label>}
+
+      <select
+        className={`p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-green-500 ${className}`}
+        ref={ref}
+        { ...rest }
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+
+      {error && (
+        <div className="absolute left-0 mt-1 text-xs text-white bg-red-500 p-1 rounded shadow z-10">
+          {error}
+        </div>
+      )}
+    </div>
   );
-}
+})
+
+CustomSelectInput.displayName = "CustomSelectInput";

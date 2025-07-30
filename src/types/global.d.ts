@@ -32,7 +32,13 @@ declare global {
     title?: string;
     description?: string;
     price?: number;
+    quantity?: number;
+    rating?: number;
+    unitsSold?: number;
+    earned?: number;
+    productStatus?: string;
     user_id?: string;
+    user: User;
   }
 
   interface Category {

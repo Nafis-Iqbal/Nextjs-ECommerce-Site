@@ -2,21 +2,21 @@
 import { apiFetch } from "../apiInstance";
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-async function createUser(userData: UserData) {
-  const response = await apiFetch<ApiResponse<User>>('/users', {
+async function createProduct(productData: Product) {
+  const response = await apiFetch<ApiResponse<Product>>('/products', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(userData),
+    body: JSON.stringify(productData),
   });
 
   return response;
-}
+}            
 
-export function useCreateUserRQ(onSuccessFn: (ApiResponse: any) => void, onErrorFn: () => void) {
+export function useCreateProductRQ(onSuccessFn: (ApiResponse: any) => void, onErrorFn: () => void) {
     return useMutation({
-        mutationFn: createUser,
+        mutationFn: createProduct,
         onSuccess: (data) => {
             onSuccessFn(data);
         },
@@ -26,8 +26,8 @@ export function useCreateUserRQ(onSuccessFn: (ApiResponse: any) => void, onError
     });
 }
 
-export async function getUsers(queryString?: string) {
-  const response = await apiFetch<ApiResponse<User>>(`/users${queryString ? `?${queryString}` : ""}`, {
+export async function getProducts(queryString?: string) {
+  const response = await apiFetch<ApiResponse<Product>>(`/products${queryString ? `?${queryString}` : ""}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -37,14 +37,12 @@ export async function getUsers(queryString?: string) {
   return response;
 }
 
-export function useGetUsersRQ(queryString?: string) {
-    return useQuery<ApiResponse<User>>({
-        queryFn: () => getUsers(queryString),
-        queryKey: ["users", queryString],
+export function useGetProductsRQ(queryString?: string) {
+    return useQuery<ApiResponse<Product>>({
+        queryFn: () => getProducts(queryString),
+        queryKey: ["products", queryString],
         staleTime: queryString ? 0 : 30_000, 
         gcTime: 30 * 1000,
         refetchOnMount: queryString ? "always" : false
     });
 }
-
-export default createUser;

@@ -21,7 +21,7 @@ export async function POST(req: Request)
     }
 
     try {
-        return await ProductController.getProductList(body);
+        return await ProductController.getProducts(body);
     }
     catch(error) {
         return errorResponse(error);
