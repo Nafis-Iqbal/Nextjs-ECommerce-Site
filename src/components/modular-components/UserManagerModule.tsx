@@ -86,7 +86,7 @@ export const UserManagerModule = () => {
         } else {
             parsedValue = value || undefined;
         }
-        console.log(filters?.user_status + " " + parsedValue + " " + name + " " + value);
+        
         setFilters((prev) => ({
             ...prev,
             [name]: parsedValue

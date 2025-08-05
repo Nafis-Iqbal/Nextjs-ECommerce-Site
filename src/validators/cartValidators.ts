@@ -8,7 +8,3 @@ export const addCartItemSchema = z.object({
 export const updateCartItemSchema = z.object({
     product_quantity: z.number()
 });
-
-export const filterProductSchema = z.object({
-    categories: z.array(z.string())
-});

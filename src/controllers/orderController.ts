@@ -1,7 +1,7 @@
 import prismadb from "@/prisma/prismadb";
 
 import { errorResponse } from "@/utilities/utilities";
-import { Status, Role } from "@/types/enums";
+import { OrderStatus, Role } from "@/types/enums";
 
 import { AddressController, CartController } from "@/controllers";
 
@@ -264,7 +264,7 @@ async function createOrderItemsFromCartItems(order_id: string, address_id: strin
     }
 }
 
-export async function updateOrderStatus(id: string, data: {orderStatus: Status}, self_user_data: {user_id: string; email: string; role: Role})
+export async function updateOrderStatus(id: string, data: {orderStatus: OrderStatus}, self_user_data: {user_id: string; email: string; role: Role})
 {
     try{
         await prismadb.order.update({

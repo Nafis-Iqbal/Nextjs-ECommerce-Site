@@ -9,15 +9,29 @@ interface buttonProps {
     buttonTextColor?: string;
     mediaTextSize?: string;
     extraStyle?: string;
+    type?: "button" | "submit" | "reset";
     onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
     children?: ReactNode;
 }
 
-const BasicButton = ({ padding = "p-1 md:p-2", margin = "m-1", buttonColor = "bg-gray-700", buttonHoverColor = "hover:bg-gray-600", buttonTextColor = "text-white", mediaTextSize = "text-sm md:text-base", extraStyle = "", onClick, children } : buttonProps) => {
-    const buttonStyle = padding + " " + margin + " " + buttonColor + " " + buttonHoverColor + " disabled:bg-grey-300 " + buttonTextColor + " " + mediaTextSize + " " + extraStyle;
+const BasicButton = ({ 
+    type = "button",
+    padding = "p-1 md:p-2", 
+    margin = "m-1", 
+    buttonColor = "bg-gray-700", 
+    buttonHoverColor = "hover:bg-gray-600", 
+    buttonTextColor = "text-white", 
+    mediaTextSize = "text-sm md:text-base", 
+    extraStyle = "", 
+    onClick, 
+    children 
+} : 
+buttonProps) => {
+    const buttonStyle = padding + " " + margin + " " + buttonColor + " " + buttonHoverColor + " disabled:bg-grey-300 " + buttonTextColor + " " + 
+    mediaTextSize + " " + type + " " + extraStyle;
     
     return (
-        <button className={buttonStyle} onClick={onClick}>
+        <button className={buttonStyle} onClick={onClick} type={type}>
             {children}
         </button>
     );

@@ -5,9 +5,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 async function createUser(userData: UserData) {
   const response = await apiFetch<ApiResponse<User>>('/users', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(userData),
   });
 
@@ -28,10 +25,7 @@ export function useCreateUserRQ(onSuccessFn: (ApiResponse: any) => void, onError
 
 export async function getUsers(queryString?: string) {
   const response = await apiFetch<ApiResponse<User>>(`/users${queryString ? `?${queryString}` : ""}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+    method: 'GET'
   });
 
   return response;
@@ -44,6 +38,27 @@ export function useGetUsersRQ(queryString?: string) {
         staleTime: queryString ? 0 : 30_000, 
         gcTime: 30 * 1000,
         refetchOnMount: queryString ? "always" : false
+    });
+}
+
+export async function updateUser(userData: Partial<User>) {
+  const response = await apiFetch<ApiResponse<User>>(`/users/${userData.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(userData),
+  });
+
+  return response;
+}
+
+export function useUpdateUserRQ(onSuccessFn: (ApiResponse: any) => void, onErrorFn: () => void) {
+    return useMutation({
+        mutationFn: updateUser,
+        onSuccess: (data) => {
+            onSuccessFn(data);
+        },
+        onError: () => {
+            onErrorFn();
+        }
     });
 }
 

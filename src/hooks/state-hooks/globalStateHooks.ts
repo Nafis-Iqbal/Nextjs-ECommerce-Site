@@ -16,17 +16,9 @@ export const useGlobalUI = () => {
         }));
     };
 
-    const openPhotoUploadWindow = (setStatus: boolean, pic_url: string = '') => {
-        dispatch(setPhotoUploadView({
-            isVisible: setStatus,
-            pic_url
-        }));
-    }
-
     return {
         showLoadingContent,
-        openNotificationPopUpMessage,
-        openPhotoUploadWindow
+        openNotificationPopUpMessage
     };
 };
 

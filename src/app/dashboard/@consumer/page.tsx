@@ -60,11 +60,10 @@ export default function ConsumerDashboard() {
                     <TableLayout className="mr-5">
                         <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                             <p className="w-[5%]">Sr. No.</p>
-                            <p className="w-[30%]">Order ID</p>
+                            <p className="w-[35%]">Order ID</p>
                             <p className="w-[20%]">Total Amount</p>
                             <p className="w-[15%]">Order Status</p>
-                            <p className="w-[20%]">Created</p>
-                            <p className="w-[10%]">Filter</p>
+                            <p className="w-[25%]">Created</p>
                         </div>
                         <div className="flex flex-col border-1 border-green-800">
                             <BuyerOrderListTableRow id={1} buyerOrderID="1" orderUserName="Nafis" totalAmount={2000} orderStatus={OrderStatus.PENDING} createdDate={new Date()}/>
@@ -142,18 +141,17 @@ const CartItemListTableRow = ({
 }
 
 const BuyerOrderListTableRow = ({
-    id, buyerOrderID, totalAmount, orderStatus, createdDate, mode = ""
+    id, buyerOrderID, totalAmount, orderStatus, createdDate
 } : {
-    id: number, buyerOrderID: string, orderUserName: string, totalAmount: number, orderStatus: OrderStatus, createdDate: Date, mode?: string
+    id: number, buyerOrderID: string, orderUserName: string, totalAmount: number, orderStatus: OrderStatus, createdDate: Date
 }) => {
     return (
         <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
             <p className="w-[5%]">{id}</p>
-            <p className="w-[30%]">{buyerOrderID}</p>
+            <p className="w-[35%]">{buyerOrderID}</p>
             <p className="w-[20%]">{totalAmount}</p>
             <p className="w-[15%]">{orderStatus}</p>
-            <p className="w-[20%]">{createdDate.toDateString()}</p>
-            <p className="w-[10%]">{mode}</p>
+            <p className="w-[25%]">{createdDate.toDateString()}</p>
         </div>
     )
 }

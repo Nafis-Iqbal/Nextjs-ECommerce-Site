@@ -2,6 +2,13 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
+const routeRoleMap: Record<string, string> = {
+  "/admin/create-product": "admin",
+  "/admin/manage-admins": "master_admin",
+  "/admin/users": "admin",
+  "/admin/system": "master_admin",
+};
+
 export async function middleware(req: NextRequest) {
   if(process.env.MIDDLEWARE_DISABLED === 'true'){
     return NextResponse.next();
@@ -16,12 +23,20 @@ export async function middleware(req: NextRequest) {
 
   // const token = authHeader.slice(7); // Remove "Bearer " prefix
 
-  const token = req.cookies.get('session-token')?.value;
+  // //Cookie-based authentication
+  // const token = req.cookies.get('session-token')?.value;
+
+  const token = req.cookies.get("next-auth.session-token")?.value || 
+                req.cookies.get("__Secure-next-auth.session-token")?.value;
+
+  if (!token) {
+    return new NextResponse('Authentication token is missing', { status: 401 });
+  }
 
   try {
     const { payload } = await jwtVerify(token ?? "", new TextEncoder().encode(process.env.JWT_SECRET || 'secret'));
 
-    (req as any).user = payload; // Optionally store user info in the request for later use in handlers
+    (req as any).user = payload;
 
     return NextResponse.next();
   } catch (error) {

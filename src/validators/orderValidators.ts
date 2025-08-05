@@ -1,4 +1,5 @@
 import {z} from "zod";
+import { OrderStatus } from "@/types/enums";
 
 export const createAddressSchema = z.object({
     addressLine1: z.string(),
@@ -38,3 +39,10 @@ export const updateOrderStatusSchema = z.object({
 export const updateSellerOrderStatusSchema = z.object({
     orderStatus: z.enum(["FAILED", "PENDING", "SHIPPED", "COMPLETED"])
 }).strict()
+
+export const filterSellerOrdersSchema = z.object({
+    orderStatus: z.nativeEnum(OrderStatus).optional(),
+    orderBuyer_id: z.number().optional(),
+    minimum_total_amount: z.number().optional(),
+    orderBuyerName: z.string().optional(),
+});

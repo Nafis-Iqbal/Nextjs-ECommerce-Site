@@ -4,13 +4,15 @@ import { ProductStatus } from "@/types/enums";
 export const createProductSchema = z.object({
     title: z.string().min(3),
     description: z.string().min(10),
-    price: z.number()
+    price: z.number(),
+    quantity: z.number()
 });
 
 export const updateProductSchema = z.object({
-    title: z.string().min(3),
-    description: z.string().min(10),
-    price: z.number()
+    title: z.string().min(3).optional(),
+    description: z.string().min(10).optional(),
+    price: z.number().optional(),
+    quantity: z.number().optional(),
 });
 
 export const filterProductSchema = z.object({

@@ -5,9 +5,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 async function createCategory(category: Category) {
   const response = await apiFetch<ApiResponse<Category>>('/category', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(category),
   });
 
@@ -27,18 +24,15 @@ export function useCreateCategoryRQ(onSuccessFn: (ApiResponse: any) => void, onE
 }
 
 export async function getCategories() {
-  const response = await apiFetch<ApiResponse<Category>>('/category', {
+  const response = await apiFetch<ApiResponse<Category[]>>('/category', {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    }
   });
 
   return response;
 }
 
 export function useGetCategoriesRQ() {
-    return useQuery<ApiResponse<Category>>({
+    return useQuery<ApiResponse<Category[]>>({
         queryFn: getCategories,
         queryKey: ["categories"],
         staleTime: 30 * 1000,
@@ -48,10 +42,7 @@ export function useGetCategoriesRQ() {
 
 export async function deleteCategory(id: string) {
   const response = await apiFetch<ApiResponse<Category>>(`/category/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    }
+    method: 'DELETE'
   });
 
   return response;

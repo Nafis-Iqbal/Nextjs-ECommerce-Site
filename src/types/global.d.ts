@@ -9,7 +9,7 @@ declare global {
   interface ApiResponse<T> {
     message: string;
     status: "success" | "failure";
-    data: T[];
+    data: T | null | undefined;
   }
 
   type UserData = {
@@ -25,6 +25,7 @@ declare global {
     email: string;
     role: Role;
     emailVerified: Date;
+    image: Image;
   }
 
   interface Product {
@@ -33,12 +34,27 @@ declare global {
     description?: string;
     price?: number;
     quantity?: number;
+    pendingOrderCount?: number;
     rating?: number;
     unitsSold?: number;
     earned?: number;
     productStatus?: string;
     user_id?: string;
     user: User;
+    imagesURLs?: string[];
+    images?: Image[];
+  }
+
+  interface Image {
+    id: string;
+    url: string;
+    altText?: string;
+    order?: number;    // display priority/order
+    width?: number;    // pixels
+    height?: number;    // pixels
+    fileSize?: number;    // bytes
+    product_id?: string;
+    user_id?: string;
   }
 
   interface Category {
@@ -97,6 +113,22 @@ declare global {
     updatedAt?: DateTime;
 
     address_id: string;
+    items?: OrderItem[];
+
+    totalAmount?: number;
+    buyer?: User;
+  }
+
+  interface OrderItem {
+    id: string;
+
+    order_id?: string;
+    seller_order_id?: string;
+
+    product_id?: string;
+    product_name?: string;
+    product_price?: number;
+    product_quantity?: number;
   }
 }
 

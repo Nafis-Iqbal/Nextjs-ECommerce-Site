@@ -73,7 +73,6 @@ model User {
   role Role @default(USER)
   userStatus UserStatus @default(ACTIVE)
   paymentStatus PaymentStatus @default(PAID)
-  image String?
   spent Int @default(0)
   earned Int @default(0)
   orderCount Int @default(0)
@@ -88,6 +87,7 @@ model User {
   sellerOrderSeller SellerOrder[] @relation("SellerOrderSeller")
   notifications Notification[]
   accounts Account[]
+  profileImage UserImage?
 }
 
 model Account {
@@ -115,6 +115,7 @@ model Product {
   description String
   price Int
   quantity Int @default(1)
+  pendingOrderCount Int @default(0)
   rating Float @default(0)
   unitsSold Int @default(0)
   earned Int @default(0)
@@ -128,6 +129,35 @@ model Product {
   reviews Review[]
   productCategories ProductCategory[]
   cartItems CartItem[]
+  images ProductImage[]
+}
+
+model ProductImage {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  url String
+  altText String?
+  order Int?    // display priority/order
+  width Int?    // pixels
+  height Int?    // pixels
+  fileSize Int?    // bytes
+  
+  product_id String
+
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model UserImage {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  url String
+  altText String?
+  order Int?    // display priority/order
+  width Int?    // pixels
+  height Int?    // pixels
+  fileSize Int?    // bytes
+  
+  user_id String @unique
+
+  user User @relation(fields: [user_id], references: [id])
 }
 
 model Category {

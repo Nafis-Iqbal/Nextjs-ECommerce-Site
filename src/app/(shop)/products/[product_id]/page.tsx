@@ -3,7 +3,7 @@ import { NextImage, VerticalDivider, HorizontalDivider } from "@/components/cust
 import { ReviewListTableRow } from "@/components/data-elements/DataTableRowElements"
 import { StarRating } from "@/components/custom-elements/StarRating"
 import RatingStats from "@/components/custom-elements/RatingStats"
-import { CustomTextArea } from "@/components/custom-elements/CustomInputElements"
+import { CustomTextAreaInput } from "@/components/custom-elements/CustomInputElements"
 import ProductEditConsole from "@/components/custom-elements/ProductEditConsole"
 
 export default function ProductDetailPage() {
@@ -69,7 +69,7 @@ export default function ProductDetailPage() {
 
                             <pre className="">for    <span className="text-lg text-green-500">Product Name</span></pre>
 
-                            <CustomTextArea className="min-h-[50px] md:min-h-[150px]" placeholderText="Does this product make you calm? or angry?"></CustomTextArea>
+                            <CustomTextAreaInput className="min-h-[50px] md:min-h-[150px]" placeholderText="Does this product make you calm? or angry?"></CustomTextAreaInput>
 
                             <div className="flex justify-end">
                                 <button className="px-8 py-2 bg-green-700 hover:bg-green-600 rounded-md">Submit</button>

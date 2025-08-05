@@ -30,38 +30,44 @@ export async function createProduct(user_id: string, data: {title: string, descr
     }
 }
 
-export async function updateProduct(id: string, user_id: string, data: {title?: string, description?: string, price?: number, quantity?: number}) {
-    const {title, description, price, quantity} = data;
-    
-    try{
+export async function updateProduct(id: string, user_id: string, data: {title?: string, description?: string, price?: number, quantity?: number, imageURLs?: string[]}) {
+    const { title, description, price, quantity, imageURLs } = data;
+
+    try {
         const updatedProduct = await prismadb.product.update({
             where: {
-                id_user_id: {
-                    id,
-                    user_id
-                }
+                id_user_id: { id, user_id }
             },
-            data: {
-                title,
-                description,
-                price,
-                quantity
-            }
+            data: { title, description, price, quantity }
         });
+
+        if (imageURLs && imageURLs.length > 0) {
+            await Promise.all(
+                imageURLs.map(async (url, index) => {
+                    await prismadb.productImage.create({
+                        data: {
+                            url,
+                            product_id: id,
+                            order: index
+                        }
+                    });
+                })
+            );
+        }
 
         return new Response(
             JSON.stringify({
                 status: "success",
-                message: "Product updated successfully",
+                message: "Product and images updated successfully",
                 data: updatedProduct
             }),
-            {status: 200}
+            { status: 200 }
         );
-    }
-    catch(error){
+    } catch (error) {
         return errorResponse(error);
     }
 }
+
 
 export async function deleteProduct(id: string, user_id: string) {
     try{
@@ -70,6 +76,9 @@ export async function deleteProduct(id: string, user_id: string) {
                 where: {product_id: id}
             }),
             prismadb.productCategory.deleteMany({
+                where: {product_id: id}
+            }),
+            prismadb.productImage.deleteMany({
                 where: {product_id: id}
             }),
             prismadb.product.delete({
@@ -96,6 +105,49 @@ export async function deleteProduct(id: string, user_id: string) {
     }
 }
 
+export async function deleteProductImages(user_id: string, product_id: string, data: {imageIds: string[]}) {
+    const { imageIds } = data;
+
+    try {
+        const product = await prismadb.product.findUnique({
+        where: {
+            id_user_id: {
+            id: product_id,
+            user_id: user_id,
+            },
+        },
+        });
+
+        if (!product) {
+            return new Response(
+                JSON.stringify({
+                status: "error",
+                message: "Unauthorized or product not found",
+                }),
+                { status: 403 }
+            );
+        }
+
+        await prismadb.productImage.deleteMany({
+            where: {
+                id: { in: imageIds },
+                product_id: product_id,
+            },
+        });
+
+        return new Response(
+            JSON.stringify({
+                status: "success",
+                message: "Product images deleted successfully",
+                data: [],
+            }),
+            { status: 200 }
+        );
+  } catch (error) {
+        return errorResponse(error);
+  }
+}
+
 export async function getProductDetail(id: string) {
     try{
         const productDetail = await prismadb.product.findUnique({
@@ -106,6 +158,13 @@ export async function getProductDetail(id: string) {
                 productCategories: {
                     select: {
                         category_id: true
+                    }
+                },
+                images: {
+                    select: {
+                        id: true,
+                        url: true,
+                        order: true
                     }
                 },
                 reviews : true
@@ -136,7 +195,7 @@ export async function modifyProductCategories(id: string, user_id: string, data:
                 }
             }
         })
-
+        
         if(!productToModify){
             return new Response(
                 JSON.stringify({
@@ -176,7 +235,6 @@ export async function modifyProductCategories(id: string, user_id: string, data:
                     )
                 );
             }
-
             return new Response(
                 JSON.stringify({
                     status: "success",
@@ -194,7 +252,7 @@ export async function modifyProductCategories(id: string, user_id: string, data:
 
 export async function getCategoriesOfProduct(id: string) {
     try{
-        const categories = await prismadb.productCategory.findMany({
+        const rawCategoryResult = await prismadb.productCategory.findMany({
             where: {
                 product_id: id
             },
@@ -202,6 +260,8 @@ export async function getCategoriesOfProduct(id: string) {
                 category: true
             }
         });
+
+        const categories = rawCategoryResult.map(c => c.category);
 
         return new Response(
             JSON.stringify({
@@ -316,3 +376,36 @@ export function buildPrismaProductFilter(filters: Record<string, string>) {
 
     return where;
 }
+
+// export async function updateProduct(id: string, user_id: string, data: {title?: string, description?: string, price?: number, quantity?: number, images?: string[]}) {
+//     const {title, description, price, quantity} = data;
+    
+//     try{
+//         const updatedProduct = await prismadb.product.update({
+//             where: {
+//                 id_user_id: {
+//                     id,
+//                     user_id
+//                 }
+//             },
+//             data: {
+//                 title,
+//                 description,
+//                 price,
+//                 quantity
+//             }
+//         });
+
+//         return new Response(
+//             JSON.stringify({
+//                 status: "success",
+//                 message: "Product updated successfully",
+//                 data: updatedProduct
+//             }),
+//             {status: 200}
+//         );
+//     }
+//     catch(error){
+//         return errorResponse(error);
+//     }
+// }
