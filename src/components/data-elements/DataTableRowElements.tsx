@@ -2,17 +2,32 @@ import { NextImage } from "../custom-elements/UIUtilities"
 import { StarRating } from "../custom-elements/StarRating"
 import { OrderStatus } from "@/types/enums"
 
-export const ProductViewListTableRow = ({id, productName, product_id, productImage, productType, price} : 
-    {id: number, productName: string, product_id: string, productImage: string, productType: string, price: number}) => 
+export const ProductViewListTableRow = ({
+    id, 
+    productName, 
+    product_id, 
+    productImageURL, 
+    productCategoryType, 
+    price,
+    onClickNavigate
+} : {
+    id: number, 
+    productName: string, 
+    product_id: string, 
+    productImageURL: string, 
+    productCategoryType: string, 
+    price: number,
+    onClickNavigate: () => void
+}) => 
 {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex items-center p-2 w-full h-[150px] border-b-1 border-green-900 text-center">
             <p className="w-[5%]">{id}</p>
             <p className="w-[20%]">{productName}</p>
-            <p className="w-[35%]">{productImage}</p>
-            <p className="w-[15%]">{productType}</p>
+            <NextImage className="w-[35%] h-full cursor-pointer bg-gray-600" nextImageClassName="object-contain" src={productImageURL} alt={productName}/>
+            <p className="w-[15%]">{productCategoryType}</p>
             <p className="w-[10%]">{price}</p>
-            <p className="w-[15%]">{product_id}</p>
+            <button className="w-[15%] hover:bg-gray-600 cursor-pointer" onClick={() => onClickNavigate()}>{product_id}</button>
         </div>
     )
 }

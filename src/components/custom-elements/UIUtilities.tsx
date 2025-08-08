@@ -8,10 +8,10 @@ export const Logo = ({textSize = "md:text-xl lg:text-2xl", position = "ml-5"} : 
     );
 }
 
-export const NextImage = ({className, src, alt} : {className?: string, src: string, alt: string}) => {
+export const NextImage = ({className, src, alt, nextImageClassName = "object-cover"} : {className?: string, src: string, alt: string, nextImageClassName?: string}) => {
     return (
         <div className={`relative ${className}`}>
-            <Image className="object-cover" src={src} alt={alt} fill/>
+            <Image className={nextImageClassName} src={src} alt={alt} fill/>
         </div>
     )
 }

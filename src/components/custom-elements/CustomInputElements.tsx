@@ -8,6 +8,28 @@ type CustomInputProps = {
   error?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>
 
+export const CustomMiniTextInput = forwardRef<HTMLInputElement, CustomInputProps>((props, ref) => {
+    const {
+      className,
+      placeholderText,
+      label,
+      labelStyle,
+      error,
+      ...rest
+    } = props;
+
+    return (
+      <input className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
+          focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
+          style={{ textIndent: '6px' }}
+          ref={ref}
+          { ...rest }
+      />
+    )
+})
+
+CustomMiniTextInput.displayName = "CustomMiniTextInput";
+
 export const CustomTextInput = forwardRef<HTMLInputElement, CustomInputProps>((props, ref) => {
     const {
       className,

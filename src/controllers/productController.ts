@@ -324,6 +324,13 @@ export async function getProducts(data: {categories?: string[], user_id?: string
                                 id: true,
                                 user_name: true,
                             }
+                        },
+                        productCategories: true,
+                        images:{
+                            select: {
+                                id: true,
+                                url: true
+                            }
                         }
                     }
                 }

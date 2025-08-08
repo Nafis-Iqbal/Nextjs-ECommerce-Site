@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import DropdownMenu from "./DropdownMenu";
-
+import Link from "next/link";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
+import DropdownMenu from "./DropdownMenu";
+import { FaShoppingCart, FaUser, FaGift, FaGlobe } from "react-icons/fa";
+import IconWithBadge from "../custom-elements/IconWithBadge";
 
 const Navbar: React.FC = () => {
     const router = useRouter();
@@ -51,11 +52,24 @@ const Navbar: React.FC = () => {
                 <DropdownMenu menuPosition="top-full -right-1"/>
 
                 <div className="hidden md:flex justify-end md:w-[30%] mr-2 md:mr-4 lg:mr-8 space-x-6 items-center md:text-lg lg:text-xl text-green-800 font-sans font-semibold bg-inherit">
-                    <a className="p-2 " href="#experience">Language</a>
-                    <a className="p-2 " href="#projectLinks">Special Deals</a>
-                    <Link className="p-2 " href="/cart">Cart</Link>
+                    <a className="p-2 " href="#experience">
+                        <FaGlobe className="md:text-2xl text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130"/>
+                    </a>
+
+                    <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/cart">
+                        <IconWithBadge Icon={FaGift} badgeValue={2} iconClassName="text-gray-800 md:text-2xl"/>
+                    </Link>
+
+                    <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/cart">
+                        <IconWithBadge Icon={FaShoppingCart} badgeValue={5} iconClassName="text-gray-800 text-xl md:text-3xl"/>
+                    </Link>
+                    
                     {!session ? (<a className="p-2 " href="/login">Log In</a>) : 
-                    (<a className="p-2 " href="/dashboard#dashboard_profile">Profile</a>)} 
+                    (
+                        <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/dashboard#dashboard_profile">
+                            <IconWithBadge Icon={FaUser} badgeValue={2} iconClassName="text-gray-800 md:text-2xl"/>
+                        </Link>
+                    )} 
                 </div>
             </div>
         </div>

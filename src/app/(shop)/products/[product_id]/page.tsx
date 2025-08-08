@@ -1,62 +1,58 @@
-import { NextImage, VerticalDivider, HorizontalDivider } from "@/components/custom-elements/UIUtilities"
+import { ProductApi } from "@/services/api"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/authOptions"
 
+import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 import { ReviewListTableRow } from "@/components/data-elements/DataTableRowElements"
+import { CustomTextAreaInput } from "@/components/custom-elements/CustomInputElements"
 import { StarRating } from "@/components/custom-elements/StarRating"
 import RatingStats from "@/components/custom-elements/RatingStats"
-import { CustomTextAreaInput } from "@/components/custom-elements/CustomInputElements"
-import ProductEditConsole from "@/components/custom-elements/ProductEditConsole"
+import { ImageViewer } from "@/components/custom-elements/ImageViewer"
+import ProductEditConsole from "@/components/console-elements/ProductEditConsole"
+import ProductCartConsole from "@/components/console-elements/ProductCartConsole"
 
-export default function ProductDetailPage() {
+
+interface Props {
+  params: { product_id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default async function ProductDetailPage({params} : Props) {
+    const productDetails = await ProductApi.getProductDetail(params.product_id);
+    const productImages = productDetails?.data?.images;
+
+    const session = await getServerSession(authOptions);
 
     return (
         <div className="flex flex-col p-2 font-sans">
             <div className="mx-6 my-6 flex flex-col space-y-5">
                 <div className="flex w-full space-x-5">
-                    <div className="flex flex-col w-[40%]">
-                        <NextImage className="w-full h-[250px] md:h-[400px]" src="/CPUPIC.webp" alt="CPU Image"></NextImage>
-
-                        <div className="flex flex-grow justify-between">
-                            <button className="w-[20%]">Prev Img</button>
-                            <button className="w-[20%]">Next Img</button>
-                        </div>
-                    </div>
+                    <ImageViewer imageList={(productImages ?? []).map((image) => {return {imageURL: image.url, imageAlt: image.altText}})}/>
                     
                     <div className="flex flex-col w-[60%] p-3 border-[0.5px] border-green-800 space-y-2">
                         <div className="flex justify-between w-full">
-                            <div className="flex flex-col">
-                                <h3>Product Name</h3>
-                                <h4>Price: 2100</h4>
+                            <div className="flex flex-col space-y-4">
+                                <h2 className="text-green-500">{productDetails?.data?.title ?? "N/A"}</h2>
+                                <h4 className="text-green-200">Price: <span className="text-white">{productDetails?.data?.price ?? "N/A"}</span></h4>
                                 
                                 <div className="flex items-center space-x-3">
-                                    <h4>Rating:</h4>
+                                    <h4 className="text-green-200">Rating:</h4>
 
-                                    <StarRating rating={4}/>
+                                    <StarRating rating={productDetails?.data?.rating ?? 0}/>
                                 </div>
                             </div>
 
-                            <ProductEditConsole/>
+                            {session && session.user.user_id === productDetails?.data?.user_id && (
+                                <ProductEditConsole productId={params.product_id} currentStock={productDetails?.data?.quantity ?? 0} className="w-[40%]"/>
+                            )}
                         </div>
                         
-                        <p className="mt-5 text-green-200">Product Description</p>
-                        <p className="min-h-[100px] md:min-h-[200px]">It's a fine product</p>
+                        <label className="mt-5 text-green-200">Product Description</label>
+                        <p className="min-h-[100px] md:min-h-[200px]">{productDetails?.data?.description ?? "N/A"}</p>
 
-                        <div className="flex flex-col mt-auto space-y-3">
-                            <label>Payment Options:</label>
-
-                            <div className="flex justify-left space-x-5 w-full">
-                                <div className="w-40% min-h-[80px] px-8 py-4 ml-5 border-1 border-green-800">
-                                    Payment Option 1
-                                </div>
-
-                                <div className="w-40% min-h-[80px] px-8 py-4 ml-5 border-1 border-green-800">
-                                    Payment Option 2
-                                </div>
-
-                                <div className="w-40% min-h-[80px] px-8 py-4 ml-5 border-1 border-green-800">
-                                    Others
-                                </div>
-                            </div>
-                        </div>
+                        {(!session || (session.user.user_id !== productDetails?.data?.user_id)) && (
+                            <ProductCartConsole className="mt-5"/>
+                        )}
                     </div>
                 </div>
 
