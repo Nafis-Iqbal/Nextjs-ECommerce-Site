@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { setLoading, setNotification, setPhotoUploadView } from '../../global-state-context/commonPopUpSlice';
+import { setLoading, setNotification } from '../../global-state-context/commonPopUpSlice';
+import * as cartActions from '@/global-state-context/cartUpdateSlice';
 
 export const useGlobalUI = () => {
     const dispatch = useDispatch();
@@ -16,9 +17,23 @@ export const useGlobalUI = () => {
         }));
     };
 
+    const openCartUpdatePopUp = (productInfo: {
+        itemId: string;
+        productId: string;
+        productName: string;
+        productPrice: number;
+        productQuantity: number;
+    }) => {
+        dispatch(cartActions.setVisibility(true));
+        dispatch(cartActions.addCartItem({
+            ...productInfo
+        }));
+    };
+
     return {
         showLoadingContent,
-        openNotificationPopUpMessage
+        openNotificationPopUpMessage,
+        openCartUpdatePopUp
     };
 };
 

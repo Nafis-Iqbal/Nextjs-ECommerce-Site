@@ -70,8 +70,10 @@ declare global {
   }
 
   interface CartItem {
+    id?: string;
     product_id: string;
     product_quantity: number;
+    product?: Product;
   }
 
   interface Address {

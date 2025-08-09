@@ -61,10 +61,10 @@ const Navbar: React.FC = () => {
                     </Link>
 
                     <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/cart">
-                        <IconWithBadge Icon={FaShoppingCart} badgeValue={5} iconClassName="text-gray-800 text-xl md:text-3xl"/>
+                        <IconWithBadge Icon={FaShoppingCart} badgeValue={5} iconClassName="text-gray-800 text-xl md:text-2xl scale-110"/>
                     </Link>
-                    
-                    {!session ? (<a className="p-2 " href="/login">Log In</a>) : 
+
+                    {!session ? (<a className="p-2 hover:scale-110" href="/login">Log In</a>) : 
                     (
                         <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/dashboard#dashboard_profile">
                             <IconWithBadge Icon={FaUser} badgeValue={2} iconClassName="text-gray-800 md:text-2xl"/>

@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from "@/services/apiInstance";
+import GlobalDataLoader from "./GlobalDataLoader";
 
 export function ClientProviders({ children, session }: { children: ReactNode, session: any; }) {
   
@@ -15,6 +16,7 @@ export function ClientProviders({ children, session }: { children: ReactNode, se
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         <Provider store={store}>
+          <GlobalDataLoader/>
           <ReactQueryDevtools initialIsOpen={true}/>
           {children}
         </Provider>

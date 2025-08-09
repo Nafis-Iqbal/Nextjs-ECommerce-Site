@@ -92,7 +92,15 @@ export async function getCartItemList(user_id: string)
         const cartItemsList = await prismadb.cartItem.findMany({
             where: {
                 user_id
-            }
+            },
+            include: {
+                product: {
+                    select:{
+                        title: true,
+                        price: true,
+                    }
+                }
+            },
         })
 
         return new Response(

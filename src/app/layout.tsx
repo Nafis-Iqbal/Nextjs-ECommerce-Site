@@ -3,12 +3,14 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Satisfy, Ubuntu_Mono, Fredericka_the_Great } from "next/font/google";
 
-import { ClientProviders } from "@/providers/ClientProviders";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { ClientProviders } from "@/providers/ClientProviders";
+import ConfirmOnRefresh from "@/utilities/ConfirmOnRefresh";
 
 import NotificationPopUp from "@/components/modals/NotificationPopUpModal";
 import LoadingModal from "@/components/modals/LoadingContentModal";
+import CartUpdateModal from "@/components/modals/CartUpdateModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,6 +55,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <ClientProviders session={session}>
               <NotificationPopUp/>
               <LoadingModal/>
+              <CartUpdateModal/>
+              <ConfirmOnRefresh/>
               {children}
           </ClientProviders>
         </main>

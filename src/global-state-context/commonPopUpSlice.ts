@@ -7,10 +7,6 @@ interface CommonPopupState{
         type: 'success' | 'error' | 'info' | null;
         isVisible: boolean;
     };
-    photoUploadView: {
-        pic_url: string;
-        isVisible: boolean;
-    }
 }
 
 const initialState: CommonPopupState = {
@@ -18,10 +14,6 @@ const initialState: CommonPopupState = {
     notification: {
         message: '',
         type: 'info',
-        isVisible: false,
-    },
-    photoUploadView: {
-        pic_url: '',
         isVisible: false,
     }
 }
@@ -42,18 +34,9 @@ const commonPopUpSlice = createSlice({
             }>
         ) => {
             state.notification = action.payload;
-        },
-        setPhotoUploadView: (
-            state, 
-            action: PayloadAction<{
-                pic_url: string;
-                isVisible: boolean;
-            }>
-        ) => {
-            state.photoUploadView = action.payload;
         }
     },
 });
 
-export const {setLoading, setNotification, setPhotoUploadView} = commonPopUpSlice.actions;
+export const {setLoading, setNotification} = commonPopUpSlice.actions;
 export default commonPopUpSlice.reducer;

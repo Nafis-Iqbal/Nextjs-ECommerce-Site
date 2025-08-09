@@ -51,8 +51,11 @@ export default async function ProductDetailPage({params} : Props) {
                         <p className="min-h-[100px] md:min-h-[200px]">{productDetails?.data?.description ?? "N/A"}</p>
 
                         {(!session || (session.user.user_id !== productDetails?.data?.user_id)) && (
-                            <ProductCartConsole className="mt-5"/>
+                            <ProductCartConsole productDetails={productDetails?.data ?? {}} className="mt-5"/>
                         )}
+
+                        {/* testing */}
+                        {/* <ProductCartConsole productDetails={productDetails?.data ?? {}} className="mt-5"/> */}
                     </div>
                 </div>
 

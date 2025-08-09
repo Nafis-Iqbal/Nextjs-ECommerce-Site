@@ -147,7 +147,7 @@ export const ImageUploadModule = ({
             <div className="flex">
                 <input className="w-fit bg-gray-300 text-gray-800" type="file" accept="image/*" onChange={handleFileSelection} multiple />
 
-                <LoadingSpinnerBlock isOpen={isImageDataSyncing} customStyle="w-[30px] h-[30px] ml-2" />
+                <LoadingSpinnerBlock isOpen={isImageDataSyncing} className="w-[30px] h-[30px] ml-2" />
             </div>
             
             {(pendingFiles.length > 0 || productImages.length > 0)&& (
