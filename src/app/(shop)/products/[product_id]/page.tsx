@@ -10,6 +10,7 @@ import RatingStats from "@/components/custom-elements/RatingStats"
 import { ImageViewer } from "@/components/custom-elements/ImageViewer"
 import ProductEditConsole from "@/components/console-elements/ProductEditConsole"
 import ProductCartConsole from "@/components/console-elements/ProductCartConsole"
+import Link from "next/link"
 
 
 interface Props {
@@ -23,6 +24,8 @@ export default async function ProductDetailPage({params} : Props) {
 
     const session = await getServerSession(authOptions);
 
+    const isUserNotProductOwner = (!session || (session.user.user_id !== productDetails?.data?.user_id));
+
     return (
         <div className="flex flex-col p-2 font-sans">
             <div className="mx-6 my-6 flex flex-col space-y-5">
@@ -31,7 +34,7 @@ export default async function ProductDetailPage({params} : Props) {
                     
                     <div className="flex flex-col w-[60%] p-3 border-[0.5px] border-green-800 space-y-2">
                         <div className="flex justify-between w-full">
-                            <div className="flex flex-col space-y-4">
+                            <div className="flex flex-col space-y-4 md:w-[60%]">
                                 <h2 className="text-green-500">{productDetails?.data?.title ?? "N/A"}</h2>
                                 <h4 className="text-green-200">Price: <span className="text-white">{productDetails?.data?.price ?? "N/A"}</span></h4>
                                 
@@ -43,15 +46,23 @@ export default async function ProductDetailPage({params} : Props) {
                             </div>
 
                             {session && session.user.user_id === productDetails?.data?.user_id && (
-                                <ProductEditConsole productId={params.product_id} currentStock={productDetails?.data?.quantity ?? 0} className="w-[40%]"/>
+                                <ProductEditConsole productId={params.product_id} currentStock={productDetails?.data?.quantity ?? 0} className="w-[40%] h-fit"/>
                             )}
                         </div>
                         
                         <label className="mt-5 text-green-200">Product Description</label>
                         <p className="min-h-[100px] md:min-h-[200px]">{productDetails?.data?.description ?? "N/A"}</p>
 
-                        {(!session || (session.user.user_id !== productDetails?.data?.user_id)) && (
+                        {isUserNotProductOwner && (
                             <ProductCartConsole productDetails={productDetails?.data ?? {}} className="mt-5"/>
+                        )}
+
+                        {!isUserNotProductOwner && (
+                            <div className="flex justify-end">
+                                <Link href={`/products?user_id=${session?.user.user_id}`} className="px-4 py-2 bg-green-700 hover:bg-green-600 rounded-xs">
+                                    Browse your products
+                                </Link>
+                            </div>
                         )}
 
                         {/* testing */}

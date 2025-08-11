@@ -49,7 +49,7 @@ export async function DELETE(req: Request, {params} : {params: Promise<{user_id:
     const {user_id} = await params;
 
     try {
-        return await UserController.deleteUserDetail(user_id);
+        return await UserController.deleteUser(user_id);
     }
     catch(error) {
         return errorResponse(error);

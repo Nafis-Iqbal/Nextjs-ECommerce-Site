@@ -39,16 +39,6 @@ export async function createUser(data: {user_name: string, email: string, passwo
                 ...(role && {role})
             },
         });
-
-        // const token = jwt.sign(
-        //     {
-        //         user_id: new_user.id,
-        //         email: new_user.email,
-        //         role: new_user.role
-        //     },
-        //     process.env.JWT_SECRET ?? "abc",
-        //     {expiresIn: '1hr'}
-        // )
         
         if(new_user) {
             const {password_hashed, ...sanitized_user} = new_user;
@@ -61,29 +51,6 @@ export async function createUser(data: {user_name: string, email: string, passwo
                 }),
                 { status: 200 }
             );
-
-            // Cookie auth implementation
-            // const cookie = serialize('session-token', token, {
-            //     httpOnly: true,
-            //     secure: process.env.NODE_ENV === 'production',
-            //     sameSite: 'lax',
-            //     path: '/',
-            //     maxAge: 60 * 60, // 1 hour in seconds
-            // });
-
-            // return new Response(
-            //     JSON.stringify({
-            //         status: "success",
-            //         message: "User created successfully",
-            //         data: sanitized_user,
-            //     }),
-            //     { 
-            //         status: 200,
-            //         headers: {
-            //             'Set-Cookie': cookie
-            //         }
-            //     }
-            // );
         }
     }
     catch(error) {
@@ -154,7 +121,7 @@ export async function updateUserDetail(id: string, data: {user_name: string}) {
     }
 }
 
-export async function deleteUserDetail(id: string) {
+export async function deleteUser(id: string) {
     try {
         const deleted_User = await prismadb.user.delete({
             where: {
@@ -247,7 +214,7 @@ export function buildPrismaUserFilter(filters: Record<string, string>) {
 }
 
 //Probably don't need it.
-export async function loginUser(data: {email: string, password: string}) {
+export async function loginUserOld(data: {email: string, password: string}) {
     try {
         const {email, password} = data;
         
@@ -331,9 +298,94 @@ export async function loginUser(data: {email: string, password: string}) {
     }
 }
 
-export async function logoutUser() {
+export async function logoutUserOld() {
     try {
 
+    }
+    catch(error) {
+        return errorResponse(error);
+    }
+}
+
+export async function createUserOld(data: {user_name: string, email: string, password: string, password_confirmation: string}) {
+    try {
+        const {user_name, email, password} = data;
+        
+        const existingUser = await prismadb.user.findUnique({
+            where: {email}
+        });
+        
+        if(existingUser){
+            return new Response(
+                JSON.stringify({
+                    status: "failed",
+                    message: "Email already in use.",
+                    data: []
+                }),
+                {status: 401}
+            )
+        }
+
+        const password_hashed = await bcrypt.hash(password, 10);
+
+        const user_count = await prismadb.user.count();
+
+        const role = user_count === 0 ? 'MASTER_ADMIN' : undefined;
+
+        const new_user = await prismadb.user.create({
+            data: {
+                user_name,
+                email,
+                password_hashed,
+                ...(role && {role})
+            },
+        });
+
+        // const token = jwt.sign(
+        //     {
+        //         user_id: new_user.id,
+        //         email: new_user.email,
+        //         role: new_user.role
+        //     },
+        //     process.env.JWT_SECRET ?? "abc",
+        //     {expiresIn: '1hr'}
+        // )
+        
+        if(new_user) {
+            const {password_hashed, ...sanitized_user} = new_user;
+
+            return new Response(
+                JSON.stringify({
+                    status: "success",
+                    message: "User created successfully",
+                    data: sanitized_user,
+                }),
+                { status: 200 }
+            );
+
+            // Cookie auth implementation
+            // const cookie = serialize('session-token', token, {
+            //     httpOnly: true,
+            //     secure: process.env.NODE_ENV === 'production',
+            //     sameSite: 'lax',
+            //     path: '/',
+            //     maxAge: 60 * 60, // 1 hour in seconds
+            // });
+
+            // return new Response(
+            //     JSON.stringify({
+            //         status: "success",
+            //         message: "User created successfully",
+            //         data: sanitized_user,
+            //     }),
+            //     { 
+            //         status: 200,
+            //         headers: {
+            //             'Set-Cookie': cookie
+            //         }
+            //     }
+            // );
+        }
     }
     catch(error) {
         return errorResponse(error);

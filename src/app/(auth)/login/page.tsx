@@ -3,11 +3,14 @@
 import Image from 'next/image';
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { redirect } from 'next/navigation';
 import { UserApi } from '@/services/api';
+import { useSession } from 'next-auth/react';
 
 import DivGap, {HorizontalDividerWithText, Logo} from "@/components/custom-elements/UIUtilities"
 
 export default function LoginPage() {
+    const {data: session} = useSession();
     const [isSignUpPage, setIsSignUpPage] = useState<boolean>(false);
     const [isEmailSignUp, setIsEmailSignUp] = useState<boolean>(false);
     const [signInFailureWarning, setSignInFailureWarning] = useState<boolean>(false);
@@ -52,6 +55,10 @@ export default function LoginPage() {
 
     const onSignUpFailure = () => {
         setSignInFailureWarning(true);
+    }
+
+    if(session){
+        redirect("/");
     }
 
     return (

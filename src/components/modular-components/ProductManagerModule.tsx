@@ -29,7 +29,7 @@ const defaultFilterValues: ProductFilter = {
 }
 
 export const ProductManagerModule = () => {
-    const [filters, setFilters] = useState<Partial<ProductFilter>>();
+    const [filters, setFilters] = useState<Partial<ProductFilter>>(defaultFilterValues);
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
     const [queryString, setQueryString] = useState<string>("");
     const {data: productsList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchProductData} = ProductApi.useGetProductsRQ(queryString);
@@ -90,7 +90,7 @@ export const ProductManagerModule = () => {
     };
 
     return (
-        <div className="flex flex-col">
+        <section className="flex flex-col" id="dashboard_products">
             <div className="flex space-x-5 mb-2">
                 <h4 className="">All Vendor Products</h4>
                 <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
@@ -199,7 +199,7 @@ export const ProductManagerModule = () => {
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10"/>
-        </div>
+        </section>
     )
 }
 

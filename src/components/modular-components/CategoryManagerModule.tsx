@@ -78,7 +78,7 @@ const CategoryManagerModule:React.FC<{className?: string}> = ({className}) => {
     }
 
     return (
-        <div id="tag_section" className={`relative flex flex-col justify-left ${className}`}>
+        <section className={`relative flex flex-col justify-left ${className}`} id="dashboard_tag_section">
             <h4 className="text-white mb-5">Category Manager</h4>
 
             <CreateCategoryModal
@@ -113,7 +113,7 @@ const CategoryManagerModule:React.FC<{className?: string}> = ({className}) => {
             </table>
 
             <HorizontalDivider className='mt-20 mb-10'/>
-        </div>
+        </section  >
     );
 }
 

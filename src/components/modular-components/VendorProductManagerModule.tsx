@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { ProductStatus } from "@/types/enums"
 import { ProductApi } from "@/services/api"
 import { queryClient } from "@/services/apiInstance"
@@ -27,9 +29,12 @@ const defaultFilterValues: ProductFilter = {
 }
 
 export const VendorProductManagerModule = () => {
-    const [filters, setFilters] = useState<Partial<ProductFilter>>();
+    const router = useRouter();
+    const {data: session} = useSession();
+
+    const [filters, setFilters] = useState<Partial<ProductFilter>>(defaultFilterValues);
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-    const [queryString, setQueryString] = useState<string>("");
+    const [queryString, setQueryString] = useState<string>(`user_id=${session?.user.user_id}`);
     const {data: productsList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchProductData} = ProductApi.useGetProductsRQ(queryString);
 
     useEffect(() => {
@@ -88,7 +93,7 @@ export const VendorProductManagerModule = () => {
     };
 
     return (
-        <div className="flex flex-col space-y-2">
+        <section className="flex flex-col space-y-2" id="dashboard_vendor_products">
             <div className="flex space-x-5">
                 <h4 className="">Your Products</h4>
                 <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
@@ -97,12 +102,13 @@ export const VendorProductManagerModule = () => {
             <TableLayout className="mr-5">
                 <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                     <p className="w-[5%]">Sr. No.</p>
-                    <p className="w-[30%]">Product Name</p>
-                    <p className="w-[15%]">Pending Orders</p>
-                    <p className="w-[10%]">Customer Rating</p>
+                    <p className="w-[35%]">Product Name</p>
+                    <p className="w-[10%]">Pending Orders</p>
+                    <p className="w-[5%]">Customer Rating</p>
                     <p className="w-[10%]">Reviews</p>
                     <p className="w-[10%]">Total Units Sold</p>
-                    <p className="w-[20%]">Total Earned</p>
+                    <p className="w-[15%]">Total Earned</p>
+                    <p className="w-[10%]">Inventory</p>
                 </div>
                 <div className="flex flex-col border-1 border-green-800">
                     {
@@ -121,6 +127,8 @@ export const VendorProductManagerModule = () => {
                                 reviewCount={6} 
                                 unitsSold={product.unitsSold || 0} 
                                 totalEarned={product.earned || 0}
+                                quantity={product.quantity || 0}
+                                onClick={() => router.push(`/products/${product.id}`)}
                             />
                         ))
                     }
@@ -129,6 +137,7 @@ export const VendorProductManagerModule = () => {
 
             <button 
                 className="w-fit p-2 bg-green-700 hover:bg-green-600 text-white text-lg rounded-sm"
+                onClick={() => router.push('/products/create')}
             >
                 Create new Product
             </button>
@@ -189,24 +198,25 @@ export const VendorProductManagerModule = () => {
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10"/>
-        </div>
+        </section>
     )
 }
 
 const ProductListTableRow = ({
-    id, productName, pendingOrders, customerRating, reviewCount, unitsSold, totalEarned
+    id, productName, pendingOrders, customerRating, reviewCount, unitsSold, totalEarned, quantity, onClick
 } : {
-    id: number, productName: string, pendingOrders: number, customerRating: number, reviewCount: number, unitsSold: number, totalEarned: number
+    id: number, productName: string, pendingOrders: number, customerRating: number, reviewCount: number, unitsSold: number, totalEarned: number, quantity: number, onClick?: () => void
 }) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center" onClick={onClick}>
             <p className="w-[5%]">{id}</p>
-            <p className="w-[30%]">{productName}</p>
-            <p className="w-[15%]">{pendingOrders}</p>
-            <p className="w-[10%]">{customerRating}</p>
+            <p className="w-[35%]">{productName}</p>
+            <p className="w-[10%]">{pendingOrders}</p>
+            <p className="w-[5%]">{customerRating}</p>
             <p className="w-[10%]">{reviewCount}</p>
             <p className="w-[10%]">{unitsSold}</p>
-            <p className="w-[20%]">{totalEarned}</p>
+            <p className="w-[15%]">{totalEarned}</p>
+            <p className="w-[10%]">{quantity}</p>
         </div>
     )
 } 

@@ -16,7 +16,7 @@ export const ComplaintManagerModule = () => {
     }
 
     return (
-        <div className="flex flex-col">
+        <section className="flex flex-col" id="dashboard_complaints">
             <div className="flex space-x-5 mb-2">
                 <h4 className="">Consumer Complaints</h4>
                 <button className="text-sm px-1 mt-1 bg-red-400 rounded-md self-center">Feature Not Ready</button>
@@ -57,7 +57,7 @@ export const ComplaintManagerModule = () => {
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10"/>
-        </div>
+        </section>
     )
 }
 

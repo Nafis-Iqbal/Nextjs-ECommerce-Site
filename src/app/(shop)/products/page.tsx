@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -7,18 +8,28 @@ import { ProductApi } from "@/services/api";
 import TableLayout from "@/components/layout-elements/TableLayout";
 import ProductViewListTableRow from "@/components/data-elements/DataTableRowElements";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function ProductListingsPage() {
     const router = useRouter();
     const {data: session} = useSession();
     const searchParams = useSearchParams();
-    const queryString = window.location.search;
+    const [queryString, setQueryString] = useState<string>('');
 
-    const {data: productsList, isLoading: isFetchLoading, isError: isFetchError} = ProductApi.useGetProductsRQ(queryString);
+    const {data: productsList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchProducts} = ProductApi.useGetProductsRQ(queryString);
+    
+    useEffect(() => {
+        const qString = (window.location.search).slice(1);
+        setQueryString(qString);
+    }, [searchParams]);
+
+    useEffect(() => {
+        refetchProducts();
+    }, [queryString]);
 
     if(!session || 
         (session.user.role === "USER") || 
-        (session.user.role === "ADMIN" && searchParams.get("owner") !== session.user.user_id)) 
+        (session.user.role === "ADMIN" && searchParams.get("user_id") !== session.user.user_id)) 
     {
         redirect("/");
     }

@@ -4,6 +4,7 @@
 
 import { useState, useEffect} from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { ProductApi } from "@/services/api";
 import { queryClient } from "@/services/apiInstance";
 import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
@@ -23,7 +24,8 @@ interface ProductFormProps {
 
 export const ProductForm = ({mode, productData = {}, product_id}: ProductFormProps) => {
     const router = useRouter();
-    
+    const {data: session} = useSession();
+
     const [productId, setProductId] = useState<string>(product_id ?? "");
 
     const [productFormData, setProductFormData] = useState<Partial<Product>>(productData);
@@ -65,7 +67,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
                 finishWithMessage("Product created successfully. Images uploaded.");
 
                 queryClient.invalidateQueries({ queryKey: ["products"] });
-                router.replace("/products");
+                router.replace(`/products?user_id=${session?.user.user_id}`);
             }
             else finishWithMessage(mode === "create" ? "Product created. But failed to save images to db. Try again from product edit mode" : 
                 "Failed to save changes. Please try again.");

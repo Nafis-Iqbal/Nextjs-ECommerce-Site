@@ -31,7 +31,7 @@ const defaultFilterValues: VendorFilter = {
 }
 
 export const VendorManagerModule = () => {
-    const [filters, setFilters] = useState<Partial<VendorFilter>>();
+    const [filters, setFilters] = useState<Partial<VendorFilter>>(defaultFilterValues);
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
     const [queryString, setQueryString] = useState<string>("role=ADMIN");
     const {data: vendorsList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchUserData} = UserApi.useGetUsersRQ(queryString);
@@ -92,7 +92,7 @@ export const VendorManagerModule = () => {
     };
 
     return (
-        <div className="flex flex-col">
+        <section className="flex flex-col" id="dashboard_vendors">
             <div className="flex space-x-5 mb-2">
                 <h4 className="">Vendors</h4>
                 <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
@@ -110,18 +110,19 @@ export const VendorManagerModule = () => {
                         isFetchLoading ? (<NoContentTableRow displayMessage="Loading Data" tdColSpan={1}/>) :
                         isFetchError ? (<NoContentTableRow displayMessage="An error occurred" tdColSpan={1}/>) :
 
-                        (vendorsList?.data && vendorsList?.data.length <= 0) ? (<NoContentTableRow displayMessage="No vendors found" tdColSpan={1}/>) :
-
-                        vendorsList?.data?.map((vendor, index) => (
-                            <VendorListTableRow 
-                                key={vendor.id} 
-                                id={index + 1} 
-                                user_name={vendor.user_name} 
-                                email={vendor.email} 
-                                earned={5000} 
-                                created={vendor.emailVerified ?? new Date(2025, 0, 31)}
-                            />
-                        ))
+                        (vendorsList?.data && Array.isArray(vendorsList?.data) && vendorsList?.data.length <= 0) ? (<NoContentTableRow displayMessage="No vendors found" tdColSpan={1}/>) :
+                        (Array.isArray(vendorsList?.data) && 
+                            vendorsList?.data?.map((vendor, index) => (
+                                <VendorListTableRow 
+                                    key={vendor.id} 
+                                    id={index + 1} 
+                                    user_name={vendor.user_name} 
+                                    email={vendor.email} 
+                                    earned={5000} 
+                                    created={vendor.emailVerified ?? new Date(2025, 0, 31)}
+                                />
+                            ))
+                        )   
                     }
                 </div>
             </TableLayout>
@@ -205,7 +206,7 @@ export const VendorManagerModule = () => {
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10"/>
-        </div>
+        </section>
     )
 }
 

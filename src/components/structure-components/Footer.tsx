@@ -22,10 +22,10 @@ const Footer: React.FC = () => {
 
     return (
         <div className="flex flex-col bg-[#00FF99]">
-            <DivGap customHeightGap="h-[50px] bg-inherit"/>
+            <DivGap customHeightGap="h-[30px] bg-inherit"/>
 
             <div className="flex flex-col md:flex-row p-1 bg-inherit">
-                <div className="flex flex-col w-full md:w-[50%] mr-10 items-center md:items-end justify-center space-y-6 border-right font-sans bg-inherit">
+                <div className="flex flex-col w-full md:w-[50%] mr-10 items-center md:items-end justify-center space-y-6 border-right text-sm font-sans bg-inherit">
                     <a
                         href="https://github.com/Nafis-Iqbal"
                         target="_blank"
@@ -44,15 +44,15 @@ const Footer: React.FC = () => {
                         <Linkedin size={28} />
                     </a>
 
-                    <a className="text-green-800 font-semibold text-lg" href="mailto:nafis@example.com">Contact Us</a>
+                    <a className="text-green-800 font-semibold" href="mailto:nafis@example.com">Contact Us</a>
                 </div>
 
-                <VerticalDivider className="hidden md:block" height="h-[180px]"/>
+                <VerticalDivider className="hidden md:block" height="h-[150px]"/>
 
                 <HorizontalDivider className="md:hidden w-[80%] mx-auto"/>
 
-                <div className="flex flex-col items-start w-full md:w-[50%] text-center md:text-start text-lg text-green-800 font-sans font-semibold bg-inherit">
-                    <a className="md:ml-10 p-2 " href="#experience">Language</a>
+                <div className="flex flex-col w-full md:w-[50%] text-center md:text-start text-sm text-green-800 font-sans font-semibold bg-inherit">
+                    <a className="md:ml-10 p-2 mt-5" href="#experience">Language</a>
                     <a className="md:ml-10 p-2 " href="#projectLinks">Special Deals</a>
                     <a className="md:ml-10 p-2 " href="#skills">Cart</a>
                     {session ? (<a className="md:ml-10 p-2  cursor-pointer" onClick={onLogOutClick}>Log Out</a>) : 
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
                 </div>
             </div>
 
-            <DivGap customHeightGap="h-[50px] bg-inherit"/>
+            <DivGap customHeightGap="h-[30px] bg-inherit"/>
         </div>
     );
 }

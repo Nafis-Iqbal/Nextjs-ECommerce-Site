@@ -3,8 +3,8 @@ import prismadb from "@/prisma/prismadb";
 
 import { errorResponse } from "@/utilities/utilities";
 
-export async function createProduct(user_id: string, data: {title: string, description: string, price: number}) {
-    const {title, description, price} = data;
+export async function createProduct(user_id: string, data: {title: string, description: string, price: number, quantity: number}) {
+    const {title, description, price, quantity} = data;
 
     try{
         const newProduct = await prismadb.product.create({
@@ -12,7 +12,8 @@ export async function createProduct(user_id: string, data: {title: string, descr
                 title,
                 description,
                 price,
-                user_id
+                user_id,
+                quantity
             }
         });
 
@@ -286,6 +287,15 @@ export async function getProducts(data: {categories?: string[], user_id?: string
             const productList = await prismadb.product.findMany({
                 where: {
                     user_id
+                },
+                include: {
+                    productCategories: true,
+                    images:{
+                        select: {
+                            id: true,
+                            url: true
+                        }
+                    }
                 }
             });
             

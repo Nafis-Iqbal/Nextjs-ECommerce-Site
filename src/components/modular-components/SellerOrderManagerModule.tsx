@@ -96,7 +96,7 @@ export const SellerOrderManagerModule = ({ className }: { className?: string }) 
     };
 
     return (
-        <div className={`flex flex-col${className ? ` ${className}` : ""}`}>
+        <section className={`flex flex-col${className ? ` ${className}` : ""}`} id="dashboard_seller_orders">
             <div className="flex space-x-5 mb-2">
                 <h4 className="">Sell Orders</h4>
                 <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
@@ -200,7 +200,7 @@ export const SellerOrderManagerModule = ({ className }: { className?: string }) 
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10" />
-        </div>
+        </section>
     );
 };
 

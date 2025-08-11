@@ -7,7 +7,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import DropdownMenu from "./DropdownMenu";
-import { FaShoppingCart, FaUser, FaGift, FaGlobe } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaGift, FaGlobe, FaSignOutAlt } from "react-icons/fa";
 import IconWithBadge from "../custom-elements/IconWithBadge";
 
 const Navbar: React.FC = () => {
@@ -69,7 +69,9 @@ const Navbar: React.FC = () => {
                         <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/dashboard#dashboard_profile">
                             <IconWithBadge Icon={FaUser} badgeValue={2} iconClassName="text-gray-800 md:text-2xl"/>
                         </Link>
-                    )} 
+                    )}
+
+                    {session && <FaSignOutAlt className="text-2xl text-gray-800 hover:scale-110" onClick={onLogOutClick} />}
                 </div>
             </div>
         </div>

@@ -140,7 +140,7 @@ export const CategorySelectionModule = ({
         </div>
         
         <div className="flex flex-col items-center">
-          <LoadingSpinnerBlock customStyle="h-[50px]" isOpen={isCategoryDataSyncing} />
+          <LoadingSpinnerBlock className="h-[50px]" isOpen={isCategoryDataSyncing} />
         </div>
       </div>
     </div>

@@ -5,23 +5,35 @@ import { QueryClient } from "@tanstack/react-query"
 export const queryClient = new QueryClient();
 
 interface FetchOptions extends RequestInit {
-  token?: string;
+    token?: string;
+    cache?: RequestCache; 
+    revalidate?: number | false; 
 }
 
 export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
-  const { token, headers, ...rest } = options;
+    const { token, headers, cache, revalidate, ...rest} = options;
 
-  const mergedHeaders = {
-    ...DEFAULT_HEADERS,
-    ...headers,
-  };
+    const mergedHeaders = {
+      ...DEFAULT_HEADERS,
+      ...headers,
+    };
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...rest,
-    headers: mergedHeaders,
-  });
+    const fetchInit: RequestInit & { next?: { revalidate?: number | false } } = {
+        ...rest,
+        headers: mergedHeaders,
+    };
 
-  return res.json() as Promise<T>;
+    // Apply caching strategies for Next.js App Router
+    if (typeof revalidate !== "undefined") {
+        fetchInit.next = { revalidate }; // ISR if number, disable ISR if false
+    }
+    if (cache) {
+        fetchInit.cache = cache; // SSR: "no-store", CSR: "default", etc.
+    }
+
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, fetchInit);
+
+    return res.json() as Promise<T>;
 }
 
 export async function apiFetchExternalURL(endpoint: string, options: FetchOptions = {}): Promise<any> {

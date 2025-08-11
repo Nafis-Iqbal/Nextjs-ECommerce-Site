@@ -35,7 +35,7 @@ const defaultFilterValues: UserFilter = {
 }
 
 export const UserManagerModule = () => {
-    const [filters, setFilters] = useState<Partial<UserFilter>>();
+    const [filters, setFilters] = useState<Partial<UserFilter>>(defaultFilterValues);
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
     const [queryString, setQueryString] = useState<string>();
     const {data: usersList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchUserData} = UserApi.useGetUsersRQ(queryString);
@@ -106,7 +106,7 @@ export const UserManagerModule = () => {
     };
 
     return (
-        <div className="flex flex-col mt-5">
+        <section className="flex flex-col mt-5" id="dashboard_users">
             <div className="flex mb-2 space-x-5">
                 <h4 className="">All Users</h4>
                 <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
@@ -125,19 +125,20 @@ export const UserManagerModule = () => {
                         isFetchLoading ? (<NoContentTableRow displayMessage="Loading Data"  tdColSpan={1}/>) :
                         isFetchError ? (<NoContentTableRow displayMessage="An error occured"  tdColSpan={1}/>) :
 
-                        (usersList?.data && usersList?.data.length <=0) ? (<NoContentTableRow displayMessage="No users found" tdColSpan={1}/>):
-
-                        usersList?.data?.map((user, index) => (
-                            <UserListTableRow 
-                                key={user.id} 
-                                id={index + 1} 
-                                user_name={user.user_name} 
-                                role={user.role} 
-                                email={user.email} 
-                                spent={5000} 
-                                joined={user.emailVerified ?? new Date(2025, 0, 31)}
-                            />
-                        ))
+                        (usersList?.data && Array.isArray(usersList?.data) && usersList?.data.length <= 0) ? (<NoContentTableRow displayMessage="No users found" tdColSpan={1}/>) :
+                        (Array.isArray(usersList?.data) &&
+                            usersList?.data?.map((user, index) => (
+                                <UserListTableRow 
+                                    key={user.id} 
+                                    id={index + 1} 
+                                    user_name={user.user_name} 
+                                    role={user.role} 
+                                    email={user.email} 
+                                    spent={5000} 
+                                    joined={user.emailVerified ?? new Date(2025, 0, 31)}
+                                />
+                            ))
+                        )
                     }
                 </div>
             </TableLayout>
@@ -229,7 +230,7 @@ export const UserManagerModule = () => {
             </FilterSectionLayout>
 
             <HorizontalDivider className="mr-5 my-10"/>
-        </div>
+        </section>
     )
 }
 
