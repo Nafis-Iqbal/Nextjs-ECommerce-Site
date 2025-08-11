@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -9,10 +10,23 @@ import { useRouter } from "next/navigation";
 import DropdownMenu from "./DropdownMenu";
 import { FaShoppingCart, FaUser, FaGift, FaGlobe, FaSignOutAlt } from "react-icons/fa";
 import IconWithBadge from "../custom-elements/IconWithBadge";
+import { useSelector } from "react-redux";
 
 const Navbar: React.FC = () => {
     const router = useRouter();
     const {data: session, status} = useSession();
+    const cartUpdateState: {
+        isOpen: boolean, 
+        items: {
+            itemId: string;
+            productId: string;
+            productName: string;
+            productPrice: number;
+            productQuantity: number;
+        }[]
+        recentProductName: string,
+        recentProductId: string
+    } = useSelector((state: any) => state.cartUpdatePopUp);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -24,10 +38,6 @@ const Navbar: React.FC = () => {
         setIsMenuOpen(false);
     }
 
-    const onLogInClick = () => {
-        router.push("/login");
-    }
-
     const onLogOutClick = () => {
         signOut({callbackUrl: "/"});
     }
@@ -36,8 +46,11 @@ const Navbar: React.FC = () => {
         <div className="fixed top-0 z-100 md:flex items-center p-1 w-[100%] h-[55px] md:h-[70px] bg-[#00FF99]">
             <div className="relative flex justify-between items-center w-[100%] h-full bg-inherit">
                 <div className="flex justify-between items-center w-[80%] md:w-[65%] bg-inherit">
-                    <button className="hidden md:block w-[20%] ml-5 p-2 text-center bg-[#0F0F0F] md:text-xl lg:text-2xl text-[#00FF99] font-satisfy
-                     rounded-sm transition-all duration-150 hover:scale-110 hover:brightness-130 hover:backdrop-blur-sm">
+                    <button 
+                        className="hidden md:block w-[20%] ml-5 p-2 text-center bg-[#0F0F0F] md:text-xl lg:text-2xl text-[#00FF99] font-satisfy
+                        rounded-sm transition-all duration-150 hover:scale-110 hover:brightness-130 hover:backdrop-blur-sm"
+                        onClick={() => router.push("/")}
+                    >
                         Suit up!
                     </button>
 
@@ -61,7 +74,7 @@ const Navbar: React.FC = () => {
                     </Link>
 
                     <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/cart">
-                        <IconWithBadge Icon={FaShoppingCart} badgeValue={5} iconClassName="text-gray-800 text-xl md:text-2xl scale-110"/>
+                        <IconWithBadge Icon={FaShoppingCart} badgeValue={cartUpdateState.items.reduce((acc, item) => acc + item.productQuantity, 0)} iconClassName="text-gray-800 text-xl md:text-2xl scale-110"/>
                     </Link>
 
                     {!session ? (<a className="p-2 hover:scale-110" href="/login">Log In</a>) : 

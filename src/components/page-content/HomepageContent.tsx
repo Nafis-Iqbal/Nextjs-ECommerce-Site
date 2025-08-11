@@ -27,8 +27,9 @@ export const HomepageContent = async () => {
                 ]} 
             />
 
-            <div className="grid grid-cols-3 gap-4 w-full">
+            <div className="flex flex-col md:grid md:grid-cols-3 md:gap-4 w-full [grid-auto-rows:1fr]">
                 {(productsData?.data ?? []).map((item, index) => (
+                    
                     <ProductInfoCard key={index} productInfo={item} />
                 ))}
             </div>

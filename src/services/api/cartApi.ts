@@ -42,9 +42,9 @@ export function useAddCartItemRQ(onSuccessFn: (ApiResponse: any) => void, onErro
     });
 }
 
-export async function updateCartItem(cartItemData: { id: string } & Partial<Omit<CartItem, "id">>) {
+export async function updateCartItem(cartItemData: { id: string, addQuantity?: boolean } & Partial<Omit<CartItem, "id">>) {
     const response = await apiFetch<ApiResponse<CartItem>>(`/cart/${cartItemData.id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         body: JSON.stringify(cartItemData),
     });
 

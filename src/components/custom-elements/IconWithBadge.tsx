@@ -18,7 +18,7 @@ export default function IconWithBadge({
       <Icon className={iconClassName} />
       {badgeValue != null && badgeValue !== "" && (
         <span
-          className={`absolute -bottom-1 -right-1 text-[10px] bg-red-500 text-white rounded-full px-[5px] py-[1px] leading-none ${badgeClassName}`}
+          className={`absolute -bottom-2 -right-3 text-[12px] bg-red-500 text-white rounded-full px-[5px] py-[1px] leading-none ${badgeClassName}`}
         >
           {badgeValue}
         </span>

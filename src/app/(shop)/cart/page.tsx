@@ -14,6 +14,7 @@ import DivGap, { HorizontalDivider } from "@/components/custom-elements/UIUtilit
 import { CustomTextInput } from "@/components/custom-elements/CustomInputElements"
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
+import ProductCartConsole from "@/components/console-elements/ProductCartConsole";
 
 export default function CartPage() {
     const router = useRouter();
@@ -117,10 +118,10 @@ export default function CartPage() {
                                 <TableLayout className="">
                                     <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
                                         <p className="w-[5%] text-green-200">Sr No.</p>
-                                        <p className="w-[60%] text-green-200">Product Name</p>
+                                        <p className="w-[45%] text-green-200">Product Name</p>
                                         <p className="w-[15%] text-green-200">Price</p>
-                                        <p className="w-[5%] text-green-200">Quantity</p>
-                                        <p className="w-[15%] text-green-200">Total</p>
+                                        <p className="w-[25%] text-green-200">Quantity</p>
+                                        <p className="w-[10%] text-green-200">Total</p>
                                     </div>
 
                                     {
@@ -128,7 +129,9 @@ export default function CartPage() {
                                             cartData?.data?.map((item, index) => (
                                                 <OrderItemListRow 
                                                     key={item.id} 
-                                                    id={index + 1} 
+                                                    id={item.id || "Unknown ID"} 
+                                                    Sr={index + 1} 
+                                                    productId={item.product_id || "Unknown Product ID"}
                                                     productName={item.product?.title || "Unknown Product"} 
                                                     quantity={item.product_quantity} 
                                                     price={item.product?.price || 0} 
@@ -138,7 +141,9 @@ export default function CartPage() {
                                             cartUpdateState.items.map((item, index) => (
                                                 <OrderItemListRow 
                                                     key={item.itemId} 
-                                                    id={index + 1} 
+                                                    id={item.itemId} 
+                                                    Sr={index + 1}
+                                                    productId={item.productId || "Unknown Product ID"}
                                                     productName={item.productName || "Unknown Product"} 
                                                     quantity={item.productQuantity} 
                                                     price={item.productPrice} 
@@ -149,20 +154,20 @@ export default function CartPage() {
 
                                     <DivGap customHeightGap="h-[15px]"/>
 
-                                    <div className="flex flex-col w-[30%] self-end mr-3">
-                                        <div className="flex justify-between">
+                                    <div className="flex flex-col w-[30%] self-end">
+                                        <div className="flex justify-between w-full">
                                             <p className="text-green-200">Items Total:</p>
-                                            <p>{totalCost}</p>
+                                            <p className="w-[35%] text-center">{totalCost}</p>
                                         </div>
 
-                                        <div className="flex justify-between">
+                                        <div className="flex justify-between w-full">
                                             <p className="text-green-200">Shipping Cost::</p>
-                                            <p>0</p>
+                                            <p className="w-[35%] text-center">0</p>
                                         </div>
 
-                                        <div className="flex justify-between">
+                                        <div className="flex justify-between w-full">
                                             <p className="text-green-200">Grand Total:</p>
-                                            <p>{totalCost}</p>
+                                            <p className="w-[35%] text-center">{totalCost}</p>
                                         </div>
                                     </div>
                                 </TableLayout>
@@ -208,14 +213,21 @@ export default function CartPage() {
     )
 }
 
-const OrderItemListRow = ({id, productName, quantity, price} : {id: number, productName: string, quantity: number, price: number}) => {
+const OrderItemListRow = ({Sr, id, productId, productName, quantity, price} : {Sr: number, id: string, productId: string, productName: string, quantity: number, price: number}) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
-            <p className="w-[5%]">{id}</p>
-            <p className="w-[60%]">{productName}</p>
+        <div className="flex p-2 w-full border-b-1 border-green-900 text-center">
+            <p className="w-[5%]">{Sr}</p>
+            <p className="w-[45%]">{productName}</p>
             <p className="w-[15%]">{price}</p>
-            <p className="w-[5%]">{quantity}</p>
-            <p className="w-[15%]">{quantity * price}</p>
+            <div className="w-[25%]">
+                <ProductCartConsole 
+                    tableRowMode={true} 
+                    itemId={id} 
+                    initialQuantity={quantity} 
+                    productDetails={{id: productId, title: productName, price: price}}
+                />
+            </div>
+            <p className="w-[10%]">{quantity * price}</p>
         </div>
     )
 }

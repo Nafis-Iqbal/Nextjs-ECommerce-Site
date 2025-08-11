@@ -29,10 +29,10 @@ export async function addCartItem(user_id: string, data: {product_id: string, pr
     }
 }
 
-export async function updateCartItem(user_id: string, item_id: string, data: {product_quantity: number})
+export async function updateCartItem(user_id: string, item_id: string, data: {product_quantity: number, addQuantity?: boolean})
 {
     try{
-        const {product_quantity} = data;
+        const {product_quantity, addQuantity = true} = data;
 
         const updatedCartItem = await prismadb.cartItem.update({
             where: {
@@ -42,7 +42,7 @@ export async function updateCartItem(user_id: string, item_id: string, data: {pr
                 }
             },
             data: {
-                product_quantity
+                product_quantity: addQuantity ? { increment: product_quantity } : product_quantity
             }
         })
 
@@ -96,6 +96,7 @@ export async function getCartItemList(user_id: string)
             include: {
                 product: {
                     select:{
+                        id: true,
                         title: true,
                         price: true,
                     }
