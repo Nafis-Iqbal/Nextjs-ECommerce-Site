@@ -19,7 +19,7 @@ export const ComplaintManagerModule = () => {
         <section className="flex flex-col" id="dashboard_complaints">
             <div className="flex space-x-5 mb-2">
                 <h4 className="">Consumer Complaints</h4>
-                <button className="text-sm px-1 mt-1 bg-red-400 rounded-md self-center">Feature Not Ready</button>
+                <div className="text-sm px-1 mt-1 bg-red-400 rounded-md self-center">Feature Not Ready</div>
             </div>
             <TableLayout className="mr-5">
                 <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">

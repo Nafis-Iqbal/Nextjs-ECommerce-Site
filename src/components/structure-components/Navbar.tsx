@@ -77,14 +77,14 @@ const Navbar: React.FC = () => {
                         <IconWithBadge Icon={FaShoppingCart} badgeValue={cartUpdateState.items.reduce((acc, item) => acc + item.productQuantity, 0)} iconClassName="text-gray-800 text-xl md:text-2xl scale-110"/>
                     </Link>
 
-                    {!session ? (<a className="p-2 hover:scale-110" href="/login">Log In</a>) : 
+                    {!session ? (<Link className="p-2 hover:scale-110" href="/login">Log In</Link>) : 
                     (
                         <Link className="p-2 text-gray-800 transition-all duration-150 hover:scale-120 hover:brightness-130" href="/dashboard#dashboard_profile">
                             <IconWithBadge Icon={FaUser} badgeValue={2} iconClassName="text-gray-800 md:text-2xl"/>
                         </Link>
                     )}
 
-                    {session && <FaSignOutAlt className="text-2xl text-gray-800 hover:scale-110" onClick={onLogOutClick} />}
+                    {session && <FaSignOutAlt className="text-2xl text-gray-800 hover:scale-110 cursor-pointer" onClick={onLogOutClick} />}
                 </div>
             </div>
         </div>

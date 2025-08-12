@@ -5,14 +5,17 @@ import { withUserData } from "@/utilities/customMiddlewares";
 
 import { OrderController } from "@/controllers";
 import { OrderValidators } from "@/validators";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-export const POST = withUserData(async (req: Request, {}, self_user_data?: {user_id: string; email: string; role: Role}) => {
+export async function POST(req: Request){
     try{
         const body = await req.json();
 
         let user_id: string | null;
-
-        if(!self_user_data){
+        
+        const session = await getServerSession(authOptions);
+        if(!session){
             user_id = null;
 
             const parsed = OrderValidators.createGuestOrderSchema.safeParse(body);
@@ -20,7 +23,7 @@ export const POST = withUserData(async (req: Request, {}, self_user_data?: {user
             if(parsed) return await OrderController.createOrderForGuest(body);
         }
         else{
-            user_id = self_user_data.user_id;
+            user_id = session.user.user_id;
 
             const parsed = OrderValidators.createUserOrderSchema.safeParse(body);
 
@@ -39,17 +42,17 @@ export const POST = withUserData(async (req: Request, {}, self_user_data?: {user
     catch(error){
         return errorResponse(error);
     }
-})
+}
 
 export const GET = withUserData(async (req: NextRequest, {}, self_user_data?: {user_id: string; email: string; role: Role}) => {
     try{
         const url_user_id = req.nextUrl.searchParams.get("user_id");
 
         if(url_user_id && self_user_data && (self_user_data.role === Role.ADMIN || self_user_data.role === Role.MASTER_ADMIN)){
-            return await OrderController.getOrdersOfUser(url_user_id);
+            return await OrderController.getOrderListOfUser(url_user_id);
         }
         else if(url_user_id == null && self_user_data){
-            return await OrderController.getOrdersOfUser(self_user_data?.user_id);
+            return await OrderController.getOrderListOfUser(self_user_data?.user_id);
         }
 
         return new Response(

@@ -1,20 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { OrderApi } from "@/services/api";
+import { useSession } from "next-auth/react";
+import { redirect, useSearchParams } from "next/navigation";
+
 import TableLayout from "@/components/layout-elements/TableLayout"
 import {OrderViewListTableRow} from "@/components/data-elements/DataTableRowElements"
 import { OrderStatus } from "@/types/enums"
 import FilterSectionLayout from "@/components/layout-elements/FilterSectionLayout"
 import { CustomSelectInput } from "@/components/custom-elements/CustomInputElements"
+import { NoContentTableRow } from "@/components/placeholder-components/NoContentTableRow";
 
 export default function OrderHistoryPage() {
+    const {data: session} = useSession();
+    const searchParams = useSearchParams();
+
+    const {data: allBuyerOrders, isLoading: isLoadingOrders, isError: isErrorOrders} = OrderApi.useGetBuyerOrdersRQ();
+
     const orderStatusOptions = Object.values(OrderStatus).map(status => ({
         value: status,
         label: status.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
     }));
-
+    
     const filterByOrderStatus = () => {
 
+    }
+
+    if(!session)
+    {
+        redirect("/");
     }
 
     return (
@@ -32,14 +47,29 @@ export default function OrderHistoryPage() {
                         <p className="w-[15%]">Order Status</p>
                     </div>
                     <div className="flex flex-col border-1 border-green-800">
-                        <OrderViewListTableRow id={1} order_id="1" orderDate={new Date} totalAmount={100} orderStatus={OrderStatus.SHIPPED}/>
-                        <OrderViewListTableRow id={1} order_id="1" orderDate={new Date} totalAmount={100} orderStatus={OrderStatus.SHIPPED}/>
-                        <OrderViewListTableRow id={1} order_id="1" orderDate={new Date} totalAmount={100} orderStatus={OrderStatus.SHIPPED}/>
+                        {
+                            isLoadingOrders ? (<NoContentTableRow displayMessage="Loading Data" tdColSpan={1}/>) :
+                            isErrorOrders ? (<NoContentTableRow displayMessage="An error occurred" tdColSpan={1}/>) :
+
+                            (allBuyerOrders?.data && Array.isArray(allBuyerOrders?.data) && allBuyerOrders?.data.length <= 0) ? (<NoContentTableRow displayMessage="No orders found" tdColSpan={1}/>) :
+                            (Array.isArray(allBuyerOrders?.data) &&
+                                allBuyerOrders?.data?.map((order, index) => (
+                                    <OrderViewListTableRow
+                                        key={order.id}
+                                        id={index + 1}
+                                        order_id={order.id}
+                                        orderDate={order.createdAt}
+                                        totalAmount={order.totalAmount}
+                                        orderStatus={order.orderStatus}
+                                    />
+                                ))
+                            )
+                        }
                     </div>
                 </TableLayout>
 
                 <FilterSectionLayout className="mr-5" onSubmit={filterByOrderStatus}>
-                    <div className="flex justify-left space-x-15">                   
+                    <div className="flex justify-left space-x-15">
                         <div className="flex flex-col space-y-1 w-full">
                             <label>Order Status</label>
                             <div className="flex justify-between">

@@ -14,9 +14,9 @@ datasource db {
 }
 
 enum UserStatus {
-  ACTIVE 
-  BANNED 
-  RESTRICTED 
+  ACTIVE
+  BANNED
+  RESTRICTED
 }
 
 enum Role {
@@ -30,7 +30,7 @@ enum Priority {
   URGENT
 }
 
-enum Status {
+enum OrderStatus {
   PAYMENT_PENDING
   PENDING
   SHIPPED
@@ -45,64 +45,64 @@ enum OrderItemStatus {
 }
 
 enum PaymentStatus {
-  UNPAID 
-  PAID 
+  UNPAID
+  PAID
 }
 
 enum ProductStatus {
-  IN_STOCK 
-  OUT_OF_STOCK 
-  SUSPENDED 
+  IN_STOCK
+  OUT_OF_STOCK
+  SUSPENDED
   BANNED
 }
 
 enum ComplaintStatus {
-  PENDING 
-  UNDER_REVIEW 
-  UNSOLVED 
-  SOLVED 
-  CLOSED 
+  PENDING
+  UNDER_REVIEW
+  UNSOLVED
+  SOLVED
+  CLOSED
 }
 
 model User {
-  id String @id @default(uuid()) @map("_id")
-  user_name String? @default("Guest_User")
-  name String?
-  email String @unique
-  password_hashed String? 
-  role Role @default(USER)
-  userStatus UserStatus @default(ACTIVE)
-  paymentStatus PaymentStatus @default(PAID)
-  spent Int @default(0)
-  earned Int @default(0)
-  orderCount Int @default(0)
-  emailVerified DateTime? @default(now())
+  id              String        @id @default(uuid()) @map("_id")
+  user_name       String?       @default("Guest_User")
+  name            String?
+  email           String        @unique
+  password_hashed String?
+  role            Role          @default(USER)
+  userStatus      UserStatus    @default(ACTIVE)
+  paymentStatus   PaymentStatus @default(PAID)
+  spent           Int           @default(0)
+  earned          Int           @default(0)
+  orderCount      Int           @default(0)
+  emailVerified   DateTime?     @default(now())
 
-  user_address Address[]
-  products Product[]
-  reviews Review[]
-  cartItems CartItem[]
-  buyerOrders Order[] @relation("BuyerOrders")
-  sellerOrderBuyer SellerOrder[] @relation("SellerOrderBuyer")
-  sellerOrderSeller SellerOrder[] @relation("SellerOrderSeller")
-  notifications Notification[]
-  accounts Account[]
-  profileImage UserImage?
+  user_address      Address[]
+  products          Product[]
+  reviews           Review[]
+  cartItems         CartItem[]
+  buyerOrders       Order[]        @relation("BuyerOrders")
+  sellerOrderBuyer  SellerOrder[]  @relation("SellerOrderBuyer")
+  sellerOrderSeller SellerOrder[]  @relation("SellerOrderSeller")
+  notifications     Notification[]
+  accounts          Account[]
+  profileImage      UserImage?
 }
 
 model Account {
-  id String @id @default(uuid()) @map("_id")
-  userId String
-  provider String
+  id                String  @id @default(uuid()) @map("_id")
+  userId            String
+  provider          String
   providerAccountId String
-  type String
-  refresh_token String? 
-  access_token String? 
-  expires_at Int?
-  id_token String? 
-  scope String?
-  token_type String?
-  session_state String?
+  type              String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  id_token          String?
+  scope             String?
+  token_type        String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id])
 
@@ -110,181 +110,181 @@ model Account {
 }
 
 model Product {
-  id String @id @default(uuid()) @map("_id")
-  title String
-  description String
-  price Int
-  quantity Int @default(1)
-  pendingOrderCount Int @default(0)
-  rating Float @default(0)
-  unitsSold Int @default(0)
-  earned Int @default(0)
-  productStatus ProductStatus @default(IN_STOCK)
-  
-  user_id String
+  id                String        @id @default(uuid()) @map("_id")
+  title             String
+  description       String
+  price             Int
+  quantity          Int           @default(1)
+  pendingOrderCount Int           @default(0)
+  rating            Float         @default(0)
+  unitsSold         Int           @default(0)
+  earned            Int           @default(0)
+  productStatus     ProductStatus @default(IN_STOCK)
+
+  user_id           String
+  user              User              @relation(fields: [user_id], references: [id])
+  reviews           Review[]
+  productCategories ProductCategory[]
+  cartItems         CartItem[]
+  images            ProductImage[]
 
   @@unique([id, user_id])
   @@unique([title, user_id])
-  user User @relation(fields: [user_id], references: [id])
-  reviews Review[]
-  productCategories ProductCategory[]
-  cartItems CartItem[]
-  images ProductImage[]
 }
 
 model ProductImage {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  url String
-  altText String?
-  order Int?    // display priority/order
-  width Int?    // pixels
-  height Int?    // pixels
-  fileSize Int?    // bytes
-  
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  url      String
+  altText  String?
+  order    Int? // display priority/order
+  width    Int? // pixels
+  height   Int? // pixels
+  fileSize Int? // bytes
+
   product_id String
 
   product Product @relation(fields: [product_id], references: [id])
 }
 
 model UserImage {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  url String
-  altText String?
-  order Int?    // display priority/order
-  width Int?    // pixels
-  height Int?    // pixels
-  fileSize Int?    // bytes
-  
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  url      String
+  altText  String?
+  order    Int? // display priority/order
+  width    Int? // pixels
+  height   Int? // pixels
+  fileSize Int? // bytes
+
   user_id String @unique
 
   user User @relation(fields: [user_id], references: [id])
 }
 
 model Category {
-  id String @id @default(uuid()) @map("_id")
+  id    String @id @default(uuid()) @map("_id")
   title String @unique
 
   productCategories ProductCategory[]
 }
 
 model ProductCategory {
-  id String @id @default(uuid()) @map("_id")
-  product_id String 
+  id          String   @id @default(uuid()) @map("_id")
+  product_id  String
   category_id String
+  product     Product  @relation(fields: [product_id], references: [id])
+  category    Category @relation(fields: [category_id], references: [id])
 
   @@unique([product_id, category_id])
-  product Product @relation(fields: [product_id], references: [id])
-  category Category @relation(fields: [category_id], references: [id])
 }
 
 model Review {
-  id String @id @default(uuid()) @map("_id")
+  id          String @id @default(uuid()) @map("_id")
   description String
-  rating Float
+  rating      Float
 
-  user_id String
+  user_id    String
   product_id String
+  user       User    @relation(fields: [user_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [id])
 
   @@unique([product_id, user_id])
   @@unique([id, user_id])
-  user User @relation(fields: [user_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
 }
 
 model CartItem {
   id String @id @default(uuid()) @map("_id")
-  
+
   user_id String
 
-  product_id String
+  product_id       String
   product_quantity Int
+  user             User    @relation(fields: [user_id], references: [id])
+  product          Product @relation(fields: [product_id], references: [id])
 
   @@unique([id, user_id])
   @@unique([user_id, product_id])
-  user User @relation(fields: [user_id], references: [id])
-  product Product @relation(fields: [product_id], references: [id])
 }
 
 model Order {
-  id String @id @default(uuid()) @map("_id")
+  id          String @id @default(uuid()) @map("_id")
   totalAmount Int
 
-  orderStatus Status @default(PAYMENT_PENDING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  paidAt DateTime?
+  orderStatus OrderStatus @default(PAYMENT_PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  paidAt      DateTime?
 
-  isGuestUser Boolean @default(false)
-  buyer_id String?
-  address_id String
-  
+  isGuestUser     Boolean       @default(false)
+  buyer_id        String?
+  address_id      String
+  deliveryAddress Address       @relation(fields: [address_id], references: [id])
+  buyer           User?         @relation("BuyerOrders", fields: [buyer_id], references: [id])
+  items           OrderItem[]
+  sellerOrders    SellerOrder[]
+
   @@unique([id, buyer_id])
-  deliveryAddress Address @relation(fields: [address_id], references: [id])
-  buyer User? @relation("BuyerOrders", fields: [buyer_id], references: [id])
-  items OrderItem[]
-  sellerOrders SellerOrder[]
 }
 
 model SellerOrder {
   id String @id @default(uuid()) @map("_id")
 
-  seller_id String
-  buyer_id String?
-  order_id String
-  orderStatus Status @default(PENDING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  seller_id   String
+  buyer_id    String?
+  order_id    String
+  orderStatus OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   address_id String
+  order      Order       @relation(fields: [order_id], references: [id])
+  buyer      User?       @relation("SellerOrderBuyer", fields: [buyer_id], references: [id])
+  seller     User        @relation("SellerOrderSeller", fields: [seller_id], references: [id])
+  items      OrderItem[]
 
   @@unique([id, seller_id])
-  order Order @relation(fields: [order_id], references: [id])
-  buyer User? @relation("SellerOrderBuyer", fields: [buyer_id], references: [id])
-  seller User @relation("SellerOrderSeller", fields: [seller_id], references: [id])
-  items OrderItem[]
 }
 
 model OrderItem {
   id String @id @default(uuid()) @map("_id")
 
-  order_id String
+  order_id        String
   seller_order_id String?
 
-  product_id String
-  product_name String
-  product_price Int
+  product_id       String
+  product_name     String
+  product_price    Int
   product_quantity Int
 
-  order Order @relation(fields: [order_id], references: [id])
+  order       Order        @relation(fields: [order_id], references: [id])
   sellerOrder SellerOrder? @relation(fields: [seller_order_id], references: [id])
 }
 
 model Address {
-  id String @id @default(uuid()) @map("_id")
+  id           String  @id @default(uuid()) @map("_id")
   addressLine1 String
   addressLine2 String?
-  city String
-  state String
-  postalCode String
-  country String
-  phoneNumber String
+  city         String
+  state        String
+  postalCode   String
+  country      String
+  phoneNumber  String
 
   user_id String?
+  user    User?   @relation(fields: [user_id], references: [id])
+  orders  Order[]
 
   @@unique([id, user_id])
-  user User? @relation(fields: [user_id], references: [id])
-  orders Order[] 
 }
 
 model Notification {
   id String @id @default(uuid()) @map("_id")
 
-  content String
-  isRead Boolean @default(false)
+  content              String
+  isRead               Boolean  @default(false)
   notificationPriority Priority @default(NORMAL)
 
   user_id String
+  user    User   @relation(fields: [user_id], references: [id])
 
   @@unique([id, user_id])
-  user User @relation(fields: [user_id], references: [id])
 }

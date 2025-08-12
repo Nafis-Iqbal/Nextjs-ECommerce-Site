@@ -1,11 +1,13 @@
 import { ProductApi } from "@/services/api";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 import { ProductInfoCard } from "../data-elements/ProductInfoCard";
 import { HeroSectionImageViewer } from "../structure-components/HeroSectionImageViewer";
 
 export const HomepageContent = async () => {
     const productsData = await ProductApi.getProducts();
-    console.log("Products Data:", productsData);
+    const session = await getServerSession(authOptions);
 
     return (
         <div className="flex flex-col items-center space-y-20 w-full mx-auto md:w-[85%] bg-gray-800">
@@ -29,8 +31,7 @@ export const HomepageContent = async () => {
 
             <div className="flex flex-col md:grid md:grid-cols-3 md:gap-4 w-full [grid-auto-rows:1fr]">
                 {(productsData?.data ?? []).map((item, index) => (
-                    
-                    <ProductInfoCard key={index} productInfo={item} />
+                    <ProductInfoCard key={index} productInfo={item} sessionUserId={session?.user.user_id} />
                 ))}
             </div>
 
@@ -54,7 +55,7 @@ export const HomepageContent = async () => {
 
             <div className="grid grid-cols-3 gap-4 w-full mb-15">
                 {(productsData?.data ?? []).map((item, index) => (
-                    <ProductInfoCard key={index} productInfo={item} />
+                    <ProductInfoCard key={index} productInfo={item} sessionUserId={session?.user.user_id}/>
                 ))}
             </div>
         </div>

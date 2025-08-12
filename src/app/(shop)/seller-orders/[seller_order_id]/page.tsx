@@ -1,13 +1,70 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import { SellerOrderApi } from "@/services/api";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { queryClient } from "@/services/apiInstance";
+import { OrderStatus } from "@/types/enums";
+
 import TableLayout from "@/components/layout-elements/TableLayout";
-import { NextImage, HorizontalDivider, VerticalDivider } from "@/components/custom-elements/UIUtilities";
+import { HorizontalDivider } from "@/components/custom-elements/UIUtilities";
+import { AddressManagerModule } from "@/components/modular-components/AddressManagerModule";
+import ConfirmationModal from "@/components/modals/ConfirmationModal";
+import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
 
 export default function SellerOrderDetailPage() {
-    const paymentDone = false;
-    
-    const onEditInfo = () => {
+    const router = useRouter();
+    const params = useParams();
+    const {openNotificationPopUpMessage} = useGlobalUI();
 
+    const [isStatusUpdateConfirmationVisible, setStatusUpdateConfirmationVisible] = useState(false);
+    const [statusToAssign, setStatusToAssign] = useState<OrderStatus>(OrderStatus.PENDING);
+
+    const {data: sellerOrderDetail, isLoading: isOrderLoading, isError: isOrderError, refetch: refetchSellerOrderDetail} = 
+    SellerOrderApi.useGetSellerOrderDetailRQ(params.seller_order_id as string);
+
+    const {mutate: updateSellerOrderStatus} = SellerOrderApi.useUpdateSellerOrderStatusRQ(
+        (responseData) => {
+            if(responseData.status === "success")
+            {
+                queryClient.invalidateQueries({ queryKey: ["sellerOrderDetail", params.seller_order_id] });
+            }
+            else openNotificationPopUpMessage("Failed to update seller order status");
+        },
+        () => {
+            openNotificationPopUpMessage("Failed to update seller order status");
+        }
+    );
+
+    useEffect(() => {
+        if (params.seller_order_id) {
+            refetchSellerOrderDetail();
+        }
+    }, [params.seller_order_id])
+
+    let sellerOrderTotal = 0;
+
+    if (Array.isArray(sellerOrderDetail?.data)) {
+        sellerOrderTotal = sellerOrderDetail.data.reduce((total, item) => total + (item.product_price * item.product_quantity), 0);
+    }
+
+    const disableSellerOrderUpdate = Array.isArray(sellerOrderDetail?.data) && 
+    (sellerOrderDetail?.data?.[0]?.orderStatus === "SHIPPED" || sellerOrderDetail?.data?.[0]?.orderStatus === "COMPLETED" || sellerOrderDetail?.data?.[0]?.orderStatus === "FAILED");
+
+    const onOrderForfeitClicked = () => {
+        setStatusToAssign(OrderStatus.FAILED);
+        setStatusUpdateConfirmationVisible(true);
+    }
+
+    const onOrderShippedClicked = () => {
+        setStatusToAssign(OrderStatus.SHIPPED);
+        setStatusUpdateConfirmationVisible(true);
+    }
+
+    const onUpdateOrderStatusConfirmed = () => {
+        updateSellerOrderStatus({orderId: params?.seller_order_id as string, orderData: {orderStatus: statusToAssign}});
+        setStatusUpdateConfirmationVisible(false);
     }
 
     return (
@@ -19,10 +76,17 @@ export default function SellerOrderDetailPage() {
                     <HorizontalDivider className="w-[95%] border-green-800"/>
                 </div>
 
+                <ConfirmationModal
+                    isVisible={isStatusUpdateConfirmationVisible}
+                    message="Are you sure you want to update the status of this order?"
+                    onConfirm={() => onUpdateOrderStatusConfirmed()} 
+                    onCancel={() => setStatusUpdateConfirmationVisible(false)} 
+                />
+
                 <div className="flex space-x-5">
                     <div className="flex flex-col space-y-5 font-sans text-left w-[65%] ml-10">
-                        <h4 className="text-green-300">Order ID:&nbsp;&nbsp;<span className="text-white font-semibold text-3xl">12345</span></h4>
-                        
+                        <h4 className="text-green-300">Order ID:&nbsp;&nbsp;<span className="text-white font-semibold text-3xl">{params.seller_order_id || "Unknown"}</span></h4>
+
                         <div className="flex flex-col">
                             <h4 className="text-green-300">Buyer Name:&nbsp;&nbsp;<span className="text-white">Nafis</span></h4>
                             <h4 className="text-green-300">Buyer Email:&nbsp;&nbsp;<span className="text-white">nafisiqbal53@gmail.com</span></h4>
@@ -39,45 +103,37 @@ export default function SellerOrderDetailPage() {
                                 <p className="w-[10%] text-green-200">Stock</p>
                                 <p className="w-[10%] text-green-200">Status</p>
                             </div>
+                            {
+                                sellerOrderDetail?.data && 
+                                Array.isArray(sellerOrderDetail.data) && 
+                                sellerOrderDetail.data.map((item, index) => (
+                                    <SellerOrderItemListRow 
+                                        key={item.id} 
+                                        Sr={index + 1} 
+                                        productName={item.product_name || "Unknown Product"} 
+                                        quantity={item.product_quantity || 0} 
+                                        price={item.product_price || 0}
+                                        stock={item.productStock || 0}
+                                        productStatus={item.productStatus || "Unknown Status"}
+                                    >
+                                    </SellerOrderItemListRow>
+                                ))
+                            }
 
-                            <SellerOrderItemListRow id="1" productName="Laptop1" quantity={2} price={250} stock={2} productStatus="AVAILABLE"></SellerOrderItemListRow>
-                            <SellerOrderItemListRow id="1" productName="Laptop1" quantity={2} price={250} stock={2} productStatus="AVAILABLE"></SellerOrderItemListRow>
-                            <SellerOrderItemListRow id="1" productName="Laptop1" quantity={2} price={250} stock={2} productStatus="AVAILABLE"></SellerOrderItemListRow> 
-
-                            <div className="flex flex-col w-[40%] self-end my-2 mr-3">
-                                <div className="flex justify-between">
-                                    <p className="text-green-200">Items Total:</p>
-                                    <p>750</p>
+                            <div className="flex flex-col w-[50%] self-end my-2 mr-3">
+                                <div className="flex space-x-10 items-center">
+                                    <p className="text-green-200">Transaction Total:</p>
+                                    <p className="text-green-500 font-semibold text-xl">{sellerOrderTotal}</p>
                                 </div>
                             </div>
                         </TableLayout>
 
-                        <div className="flex flex-col space-y-3">
-                            <div className="flex space-x-3">
-                                <h4 className="text-green-300">Shipping Address</h4>
-                            </div>
-                            
-                            <div className="flex space-x-3">
-                                <p>addressLine1, </p>
-                                <p>addressLine2</p>
-                            </div>
-
-                            <div className="flex space-x-3">
-                                <p className="text-green-300">Country:&nbsp; <span className="text-white">Bangladesh</span></p>
-                                <p className="text-green-300">City:&nbsp; <span className="text-white">Mirpur</span></p>
-                                <p className="text-green-300">State:&nbsp; <span className="text-white">Dhaka</span></p>
-                            </div>
-                            
-                            <div className="flex space-x-3">
-                                <p className="text-green-300">Postal Code:&nbsp; <span className="text-white">2100</span></p>
-                                <p className="text-green-300">Phone Number:&nbsp; <span className="text-white">01884694591</span></p>
-                            </div>
-                        </div>
+                        <AddressManagerModule/>
                         
                         <div className="flex space-x-10 mb-10">
                             <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm">Print this page</button>
 
-                            <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm">Go to Seller Orders</button>
+                            <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm" onClick={() => router.push("/seller-orders?self=true")}>Go to Seller Orders</button>
                         </div>
                     </div>
 
@@ -86,20 +142,38 @@ export default function SellerOrderDetailPage() {
                         <div className="flex justify-between">
                             <p className="text-green-200">Payment Status</p>
 
-                            <div className="flex space-x-5 justify-right">
-                                <p>PENDING</p>
-                            </div>
+                            {Array.isArray(sellerOrderDetail?.data) && <div className="flex space-x-5 justify-right">
+                                <p className="">{sellerOrderDetail?.data?.[0]?.orderStatus === "PAYMENT_PENDING" ? "PENDING" : 
+                                    sellerOrderDetail?.data?.[0]?.orderStatus === "CANCELLED" ? "N/A" : "PAID"}</p>
+                            </div>}
                         </div>
                         
                         <div className="flex justify-between">
                             <p className="text-green-200">Seller Order Status</p>
 
-                            <p>PENDING</p>
+                            {Array.isArray(sellerOrderDetail?.data) && <p>{sellerOrderDetail?.data?.[0]?.orderStatus || "Unknown Status"}</p>}
                         </div>
 
-                        <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm">Lock Available Product Stocks</button>
-                        <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm">Mark Order as Shipped</button>
-                        <button className="self px-2 py-1 bg-red-600 hover:bg-red-400 rounded-sm">Forfeit Order</button>
+                        <button 
+                            disabled 
+                            className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            Lock Available Product Stocks
+                        </button>
+                        <button 
+                            disabled={disableSellerOrderUpdate}
+                            className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                            onClick={onOrderShippedClicked}
+                        >
+                            Mark Order as Shipped
+                        </button>
+                        <button 
+                            disabled={disableSellerOrderUpdate}
+                            className="self px-2 py-1 bg-red-600 hover:bg-red-400 rounded-sm disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                            onClick={onOrderForfeitClicked}
+                        >
+                            Forfeit Order
+                        </button>
                     </div>
                 </div>
             </div>
@@ -107,10 +181,10 @@ export default function SellerOrderDetailPage() {
     )
 }
 
-const SellerOrderItemListRow = ({id, productName, quantity, price, stock, productStatus} : {id: string, productName: string, quantity: number, price: number, stock: number, productStatus: string}) => {
+const SellerOrderItemListRow = ({Sr, productName, quantity, price, stock, productStatus} : {Sr: number, productName: string, quantity: number, price: number, stock: number, productStatus: string}) => {
     return (
         <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
-            <p className="w-[5%]">{id}</p>
+            <p className="w-[5%]">{Sr}</p>
             <p className="w-[30%]">{productName}</p>
             <p className="w-[15%]">{quantity}</p>
             <p className="w-[15%]">{price}</p>

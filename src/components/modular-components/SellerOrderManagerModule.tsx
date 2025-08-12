@@ -10,6 +10,7 @@ import FilterSectionLayout from "../layout-elements/FilterSectionLayout";
 import { CustomSelectInput, CustomTextInput } from "../custom-elements/CustomInputElements";
 import { HorizontalDivider } from "../custom-elements/UIUtilities";
 import { NoContentTableRow } from "../placeholder-components/NoContentTableRow";
+import { useRouter } from "next/navigation";
 
 // Filter type
 type SellerOrderFilter = {
@@ -27,9 +28,10 @@ const defaultFilterValues: SellerOrderFilter = {
 };
 
 export const SellerOrderManagerModule = ({ className }: { className?: string }) => {
+    const router = useRouter();
     const [filters, setFilters] = useState<SellerOrderFilter>(defaultFilterValues);
     const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-    const [queryString, setQueryString] = useState<string>("");
+    const [queryString, setQueryString] = useState<string>('self=true');
     const { data: sellerOrdersList, isLoading: isFetchLoading, isError: isFetchError, refetch: refetchSellerOrderData } = useGetSellerOrdersRQ(queryString);
 
     useEffect(() => {
@@ -116,9 +118,9 @@ export const SellerOrderManagerModule = ({ className }: { className?: string }) 
                             <NoContentTableRow displayMessage="Loading Data" tdColSpan={1} />
                         ) : isFetchError ? (
                             <NoContentTableRow displayMessage="An error occurred" tdColSpan={1} />
-                        ) : (sellerOrdersList?.data && sellerOrdersList.data.length <= 0) ? (
+                        ) : (sellerOrdersList?.data && Array.isArray(sellerOrdersList.data) && sellerOrdersList.data.length <= 0) ? (
                             <NoContentTableRow displayMessage="No orders found" tdColSpan={1} />
-                        ) : (
+                        ) : (Array.isArray(sellerOrdersList?.data) &&
                             sellerOrdersList?.data?.map((seller_order, index) => (
                                 <SellerOrderListTableRow
                                     key={seller_order.id}
@@ -127,6 +129,7 @@ export const SellerOrderManagerModule = ({ className }: { className?: string }) 
                                     orderUserName={seller_order.buyer?.user_name || "Unknown"}
                                     totalAmount={seller_order.totalAmount || 0}
                                     orderStatus={seller_order.orderStatus}
+                                    onClick={() => {router.push(`/seller-orders/${seller_order.id}`)}}
                                 />
                             ))
                         )
@@ -210,15 +213,17 @@ const SellerOrderListTableRow = ({
     orderUserName,
     totalAmount,
     orderStatus,
+    onClick,
 }: {
     id: number;
     seller_order_id: string;
     orderUserName: string;
     totalAmount: number;
     orderStatus: string;
+    onClick: () => void;
 }) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center cursor-pointer" onClick={onClick}>
             <p className="w-[5%]">{id}</p>
             <p className="w-[30%]">{seller_order_id}</p>
             <p className="w-[25%]">{orderUserName}</p>

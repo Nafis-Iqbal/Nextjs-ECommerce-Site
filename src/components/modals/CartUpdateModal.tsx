@@ -83,7 +83,7 @@ const CartUpdateModal = () => {
 
                         <button className="px-4 py-2 hover:bg-green-700 hover:shadow-green-600 hover:shadow-xs border-1 border-green-800 hover:border-green-600"
                             onClick={() => {router.push("/checkout"); onClose();}}>
-                            Confirm Order
+                            Checkout
                         </button>
                     </div>
 

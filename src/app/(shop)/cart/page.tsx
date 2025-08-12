@@ -2,18 +2,18 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { CartApi } from "@/services/api"
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { CartApi } from "@/services/api"
 import { queryClient } from "@/services/apiInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
 import * as cartActions from "@/global-state-context/cartUpdateSlice";
 
 import TableLayout from "@/components/layout-elements/TableLayout"
 import DivGap, { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 import { CustomTextInput } from "@/components/custom-elements/CustomInputElements"
 import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
 import ProductCartConsole from "@/components/console-elements/ProductCartConsole";
 
 export default function CartPage() {
@@ -127,7 +127,7 @@ export default function CartPage() {
                                     {
                                         session ? (
                                             cartData?.data?.map((item, index) => (
-                                                <OrderItemListRow 
+                                                <CartItemListRow 
                                                     key={item.id} 
                                                     id={item.id || "Unknown ID"} 
                                                     Sr={index + 1} 
@@ -139,7 +139,7 @@ export default function CartPage() {
                                             ))
                                         ) : (
                                             cartUpdateState.items.map((item, index) => (
-                                                <OrderItemListRow 
+                                                <CartItemListRow 
                                                     key={item.itemId} 
                                                     id={item.itemId} 
                                                     Sr={index + 1}
@@ -202,7 +202,7 @@ export default function CartPage() {
                                         </button> 
                                     </div>
                                     
-                                    <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-xs" onClick={() => {router.push("/checkout");}}>Confirm Order</button>  
+                                    <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-xs" onClick={() => {router.push("/checkout");}}>Proceed to Checkout</button>  
                                 </div>
                             </div>
                         )
@@ -213,7 +213,7 @@ export default function CartPage() {
     )
 }
 
-const OrderItemListRow = ({Sr, id, productId, productName, quantity, price} : {Sr: number, id: string, productId: string, productName: string, quantity: number, price: number}) => {
+const CartItemListRow = ({Sr, id, productId, productName, quantity, price} : {Sr: number, id: string, productId: string, productName: string, quantity: number, price: number}) => {
     return (
         <div className="flex p-2 w-full border-b-1 border-green-900 text-center">
             <p className="w-[5%]">{Sr}</p>

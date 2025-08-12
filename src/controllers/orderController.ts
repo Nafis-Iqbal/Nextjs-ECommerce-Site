@@ -1,7 +1,7 @@
 import prismadb from "@/prisma/prismadb";
 
 import { errorResponse } from "@/utilities/utilities";
-import { OrderStatus, Role } from "@/types/enums";
+import { OrderStatus, Role  } from "@/types/enums";
 
 import { AddressController, CartController } from "@/controllers";
 
@@ -191,6 +191,7 @@ async function createSellerOrders(order_id: string, address_id: string, productI
             where: {
                 id : {in: productIds}
             },
+            distinct: ['user_id'],
             select: {
                 user_id: true
             }
@@ -251,7 +252,7 @@ async function createOrderItemsFromCartItems(order_id: string, address_id: strin
                 product_quantity: item.product_quantity,
                 product_name: product.title,
                 product_price: product.price,
-                seller_order_id: sellerOrder?.seller_id
+                seller_order_id: sellerOrder?.id
             }
         });
 
@@ -302,6 +303,9 @@ export async function getOrderDetail(id: string, self_user_data: {user_id: strin
             orderDetail = await prismadb.order.findUnique({
                 where: {
                     id
+                },
+                include: {
+                    items: true,
                 }
             })
         }
@@ -312,10 +316,13 @@ export async function getOrderDetail(id: string, self_user_data: {user_id: strin
                         id,
                         buyer_id: self_user_data.user_id
                     }
+                },
+                include: {
+                    items: true,
                 }
             })
         }
-
+        
         return new Response(
             JSON.stringify({
                 status: "success",
@@ -330,7 +337,7 @@ export async function getOrderDetail(id: string, self_user_data: {user_id: strin
     }
 }
 
-export async function getOrdersOfUser(user_id: string)
+export async function getOrderListOfUser(user_id: string)
 {
     //access permissions is handled inside route handler
     try{

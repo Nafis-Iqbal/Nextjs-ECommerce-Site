@@ -208,7 +208,7 @@ const ProductListTableRow = ({
     id: number, productName: string, pendingOrders: number, customerRating: number, reviewCount: number, unitsSold: number, totalEarned: number, quantity: number, onClick?: () => void
 }) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center" onClick={onClick}>
+        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center cursor-pointer" onClick={onClick}>
             <p className="w-[5%]">{id}</p>
             <p className="w-[35%]">{productName}</p>
             <p className="w-[10%]">{pendingOrders}</p>

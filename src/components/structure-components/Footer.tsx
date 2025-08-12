@@ -7,6 +7,7 @@ import DivGap, {HorizontalDivider, VerticalDivider} from "../custom-elements/UIU
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Footer: React.FC = () => {
     const router = useRouter();
@@ -52,11 +53,14 @@ const Footer: React.FC = () => {
                 <HorizontalDivider className="md:hidden w-[80%] mx-auto"/>
 
                 <div className="flex flex-col w-full md:w-[50%] text-center md:text-start text-sm text-green-800 font-sans font-semibold bg-inherit">
-                    <a className="md:ml-10 p-2 mt-5" href="#experience">Language</a>
-                    <a className="md:ml-10 p-2 " href="#projectLinks">Special Deals</a>
-                    <a className="md:ml-10 p-2 " href="#skills">Cart</a>
-                    {session ? (<a className="md:ml-10 p-2  cursor-pointer" onClick={onLogOutClick}>Log Out</a>) : 
-                    (<button className="md:ml-10 p-2  bg-inherit border-none cursor-pointer" onClick={onLogInClick}>Log In</button>)} 
+                    <Link className="md:ml-10 p-2 mt-5 hover:underline hover:text-green-700" href="#experience">Language</Link>
+                    <Link className="md:ml-10 p-2 hover:underline hover:text-green-700" href="#projectLinks">Special Deals</Link>
+                    <Link className="md:ml-10 p-2 hover:underline hover:text-green-700" href="/cart">Cart</Link>
+                    {session ? (
+                        <a className="md:ml-10 p-2 cursor-pointer hover:underline hover:text-green-500" onClick={onLogOutClick}>Log Out</a>
+                    ) : (
+                        <button className="md:ml-10 p-2 bg-inherit border-none cursor-pointer hover:underline hover:text-green-500" onClick={onLogInClick}>Log In</button>
+                    )}
                 </div>
             </div>
 

@@ -4,14 +4,17 @@ export enum Role {
   USER = "USER"
 }
 
-export enum OrderStatus {
-  PAYMENT_PENDING = "PAYMENT_PENDING",
-  PENDING = "PENDING",
-  SHIPPED = "SHIPPED",
-  FAILED = "FAILED",
-  CANCELLED = "CANCELLED",
-  COMPLETED = "COMPLETED"
-}
+// export enum OrderStatus {
+//   PAYMENT_PENDING = "PAYMENT_PENDING",
+//   PENDING = "PENDING",
+//   SHIPPED = "SHIPPED",
+//   FAILED = "FAILED",
+//   CANCELLED = "CANCELLED",
+//   COMPLETED = "COMPLETED"
+// }
+
+// src/types/enums.ts
+export { OrderStatus } from "@prisma/client";
 
 export enum OrderItemStatus {
   SUCCESS = "SUCCESS",
@@ -27,6 +30,14 @@ export enum UserStatus {
 export enum PaymentStatus {
   UNPAID = "UNPAID",
   PAID = "PAID",
+}
+
+export enum PaymentMethod {
+  CASH_ON_DELIVERY = "CASH_ON_DELIVERY",
+  BKASH = "BKASH",
+  CREDIT_CARD = "CREDIT_CARD",
+  DEBIT_CARD = "DEBIT_CARD",
+  BANK_TRANSFER = "BANK_TRANSFER",
 }
 
 export enum ProductStatus {

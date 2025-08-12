@@ -16,7 +16,7 @@ export default function IconWithBadge({
   return (
     <div className="relative inline-block w-fit bg-inherit">
       <Icon className={iconClassName} />
-      {badgeValue != null && badgeValue !== "" && (
+      {badgeValue != null && badgeValue !== "" && badgeValue !== 0 && (
         <span
           className={`absolute -bottom-2 -right-3 text-[12px] bg-red-500 text-white rounded-full px-[5px] py-[1px] leading-none ${badgeClassName}`}
         >

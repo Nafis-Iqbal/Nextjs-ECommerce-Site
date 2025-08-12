@@ -13,10 +13,12 @@ export const WishlistManagerModule = ({className} : {className?: string}) => {
 
     return (
         <section className={`flex flex-col ${className}`} id="dashboard_wishlist">
-            <div className="flex space-x-5 mb-2">
+            <div className="flex items-center space-x-5 mb-2">
                 <h4 className="">User Wishlist</h4>
-                <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button>
+                <div className="text-sm px-1 bg-red-400 rounded-md self-center">Feature Not Ready</div>
+                {/* <button className="text-sm px-1 mt-1 bg-green-700 hover:bg-green-600 rounded-md self-center">View All</button> */}
             </div>
+
             <TableLayout className="mr-5">
                 <div className="flex border-1 border-green-800 p-2 bg-gray-600 text-center">
                     <p className="w-[10%]">Sr. No.</p>

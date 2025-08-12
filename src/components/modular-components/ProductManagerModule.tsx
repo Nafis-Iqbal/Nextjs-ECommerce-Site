@@ -204,12 +204,12 @@ export const ProductManagerModule = () => {
 }
 
 const ProductListTableRow = ({
-    id, product_name, owner_name, rating, review_count, units_sold, total_earned, mode = ""
+    id, product_name, owner_name, rating, review_count, units_sold, total_earned
 } : {
-    id: number, product_name: string, owner_name: string, rating: number, review_count: number, units_sold: number, total_earned: number, mode?: string
+    id: number, product_name: string, owner_name: string, rating: number, review_count: number, units_sold: number, total_earned: number
 }) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center cursor-pointer">
             <p className="w-[5%]">{id}</p>
             <p className="w-[30%]">{product_name}</p>
             <p className="w-[20%]">{owner_name}</p>

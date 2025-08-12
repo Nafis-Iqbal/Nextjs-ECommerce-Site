@@ -5,6 +5,7 @@ import Image from "next/image"
 
 import DivGap from "@/components/custom-elements/UIUtilities"
 import { EditButton } from "@/components/custom-elements/Buttons"
+import { AddressManagerModule } from "@/components/modular-components/AddressManagerModule";
 
 export default function UserDashboard() {
     const onEditInfo = () => {
@@ -52,28 +53,7 @@ export default function UserDashboard() {
                         <EditButton onClick={() => onEditInfo()}></EditButton>
                     </div>
 
-                    <div className="flex flex-col mt-5 space-y-3">
-                        <div className="flex space-x-3">
-                            <p className="text-xl text-green-300">Shipping Address</p>
-                            <EditButton onClick={() => onEditInfo()}></EditButton>
-                        </div>
-                        
-                        <div className="flex space-x-3">
-                            <p>addressLine1, </p>
-                            <p>addressLine2</p>
-                        </div>
-
-                        <div className="flex space-x-3">
-                            <p>Country: <span className="text-green-300">Bangladesh</span></p>
-                            <p>City: <span className="text-green-300">Mirpur</span></p>
-                            <p>State: <span className="text-green-300">Dhaka</span></p>
-                        </div>
-                        
-                        <div className="flex space-x-3">
-                            <p>Postal Code: <span className="text-green-300">2100</span></p>
-                            <p>Phone Number: <span className="text-green-300">01884694591</span></p>
-                        </div>
-                    </div>
+                    <AddressManagerModule/>
 
                     <h2>Billing Info</h2>
 

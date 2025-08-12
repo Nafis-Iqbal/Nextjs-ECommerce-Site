@@ -1,12 +1,23 @@
 import { NextRequest } from "next/server";
 import { errorResponse } from "@/utilities/utilities";
 import { Role } from "@/types/enums";
-import { withUserData } from "@/utilities/customMiddlewares";
+import { withAdminRole, withUserData } from "@/utilities/customMiddlewares";
 
 import { SellerOrderController } from "@/controllers";
 import { OrderValidators } from "@/validators";
 
-export const PUT = withUserData( async (req: Request, {params}: {params: Promise<{seller_order_id: string}>}, self_user_data?: {user_id: string; email: string; role: Role}) => {
+export const GET = withAdminRole( async (req: NextRequest, {params}: {params: Promise<{seller_order_id: string}>}, self_user_data?: {user_id: string; email: string; role: Role}) => {
+    const {seller_order_id} = await params;
+
+    try{
+        return await SellerOrderController.getSellerOrderDetail(self_user_data?.user_id ?? "", seller_order_id);
+    }
+    catch(error){
+        return errorResponse(error);
+    }
+}, Role.ADMIN);
+
+export const PATCH = withUserData( async (req: Request, {params}: {params: Promise<{seller_order_id: string}>}, self_user_data?: {user_id: string; email: string; role: Role}) => {
     const {seller_order_id} = await params;
     
     const body = await req.json();

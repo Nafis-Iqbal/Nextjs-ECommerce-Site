@@ -34,12 +34,6 @@ const satisfy = Satisfy({
   subsets: ["latin"],
 });
 
-const fredericka = Fredericka_the_Great({
-  weight: "400",
-  variable: "--font-fredericka",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "E-Commerce Now!",
   description: "Modular E-commerce app for learning",
@@ -49,7 +43,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en" className={`${satisfy.className} ${geistSans.variable} ${geistMono.variable} ${ubuntuMono.variable} ${fredericka.variable} antialiased scroll-smooth`}>
+    <html lang="en" className={`${satisfy.className} ${geistSans.variable} ${geistMono.variable} ${ubuntuMono.variable} antialiased scroll-smooth`}>
       <body>
         <main>
           <ClientProviders session={session}>

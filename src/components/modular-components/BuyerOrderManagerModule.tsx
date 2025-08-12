@@ -8,6 +8,8 @@ import TableLayout from "../layout-elements/TableLayout"
 import { HorizontalDivider } from "../custom-elements/UIUtilities"
 import FilterSectionLayout from "../layout-elements/FilterSectionLayout"
 import { CustomSelectInput } from "../custom-elements/CustomInputElements"
+import { NoContentTableRow } from "../placeholder-components/NoContentTableRow";
+import Link from "next/link";
 
 type BuyerOrderFilter = {
     orderStatus: OrderStatus;
@@ -19,6 +21,8 @@ const defaultFilterValues: BuyerOrderFilter = {
 
 export const BuyerOrderManagerModule = ({className} : {className?: string}) => {
     const [filters, setFilters] = useState<Partial<BuyerOrderFilter>>(defaultFilterValues);
+
+    const {data: allBuyerOrders, isLoading: isLoadingOrders, isError: isErrorOrders} = OrderApi.useGetBuyerOrdersRQ();
 
     const orderStatusOptions = Object.values(OrderStatus).map(status => ({
         value: status,
@@ -53,9 +57,25 @@ export const BuyerOrderManagerModule = ({className} : {className?: string}) => {
                     <p className="w-[25%]">Created</p>
                 </div>
                 <div className="flex flex-col border-1 border-green-800">
-                    <BuyerOrderListTableRow id={1} buyerOrderID="1" orderUserName="Nafis" totalAmount={2000} orderStatus={OrderStatus.PENDING} createdDate={new Date()}/>
-                    <BuyerOrderListTableRow id={1} buyerOrderID="1" orderUserName="Nafis" totalAmount={2000} orderStatus={OrderStatus.PENDING} createdDate={new Date()}/>
-                    <BuyerOrderListTableRow id={1} buyerOrderID="1" orderUserName="Nafis" totalAmount={2000} orderStatus={OrderStatus.PENDING} createdDate={new Date()}/>
+                    {
+                        isLoadingOrders ? (<NoContentTableRow displayMessage="Loading Data" tdColSpan={1}/>) :
+                        isErrorOrders ? (<NoContentTableRow displayMessage="An error occurred" tdColSpan={1}/>) :
+
+                        (allBuyerOrders?.data && Array.isArray(allBuyerOrders?.data) && allBuyerOrders?.data.length <= 0) ? (<NoContentTableRow displayMessage="No products found" tdColSpan={1}/>) :
+                        (Array.isArray(allBuyerOrders?.data) && 
+                            allBuyerOrders?.data?.map((order: Order, index: number) => (
+                                <BuyerOrderListTableRow 
+                                    key={order.id} 
+                                    id={index + 1} 
+                                    buyerOrderID={order.id} 
+                                    orderUserName={order.user?.user_name || 'Unknown'}
+                                    totalAmount={order.totalAmount || 0}
+                                    orderStatus={order.orderStatus || 'Unknown'}
+                                    createdDate={new Date(order.createdAt)}
+                                />
+                            ))
+                        )
+                    }
                 </div>
             </TableLayout>
 
@@ -90,9 +110,9 @@ const BuyerOrderListTableRow = ({
     id: number, buyerOrderID: string, orderUserName: string, totalAmount: number, orderStatus: OrderStatus, createdDate: Date
 }) => {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex p-2 w-full border-b-1 border-green-900 text-center">
             <p className="w-[5%]">{id}</p>
-            <p className="w-[35%]">{buyerOrderID}</p>
+            <Link className="w-[35%] hover:text-green-500 hover:scale-110 duration-150" href={`/orders/${buyerOrderID}`}>{buyerOrderID}</Link>
             <p className="w-[20%]">{totalAmount}</p>
             <p className="w-[15%]">{orderStatus}</p>
             <p className="w-[25%]">{createdDate.toDateString()}</p>

@@ -28,7 +28,10 @@ export default function AdminDashboard() {
                 <ComplaintManagerModule />
 
                 <div className="flex flex-col">
-                    <h3 className="mb-5 text-green-500 font-bold">Store visibility toggle</h3>
+                    <div className="flex items-center space-x-5">
+                        <h3 className="text-green-500 font-bold">Store visibility toggle</h3>
+                        <div className="text-sm px-1 bg-red-400 rounded-md self-center">Feature Not Ready</div>
+                    </div>
 
                     <div className="flex mt-5 justify-between mr-5">
                         <div className="flex flex-col items-center space-y-2">

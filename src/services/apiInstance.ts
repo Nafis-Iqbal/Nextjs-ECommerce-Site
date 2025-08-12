@@ -37,7 +37,6 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
 }
 
 export async function apiFetchExternalURL(endpoint: string, options: FetchOptions = {}): Promise<any> {
-  console.log("fuuuuuccckkkk");
   const { token, headers, ...rest } = options;
 
   const mergedHeaders = {

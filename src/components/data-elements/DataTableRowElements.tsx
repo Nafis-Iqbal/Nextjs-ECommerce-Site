@@ -1,6 +1,7 @@
 import { NextImage } from "../custom-elements/UIUtilities"
 import { StarRating } from "../custom-elements/StarRating"
 import { OrderStatus } from "@/types/enums"
+import Link from "next/link"
 
 export const ProductViewListTableRow = ({
     id, 
@@ -36,26 +37,26 @@ export const OrderViewListTableRow = ({id, order_id, orderDate, totalAmount, ord
     {id: number, order_id: string, orderDate: Date, totalAmount: number, orderStatus: OrderStatus}) => 
 {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+        <div className="flex p-2 w-full border-b-1 border-green-900 text-center">
             <p className="w-[5%]">{id}</p>
-            <p className="w-[30%]">{order_id}</p>
-            <p className="w-[30%]">{orderDate.toDateString()}</p>
+            <Link className="w-[30%] hover:text-green-500 hover:scale-110 duration-150" href={`/orders/${order_id}`}>{order_id}</Link>
+            <p className="w-[30%]">{(new Date(orderDate)).toDateString()}</p>
             <p className="w-[20%]">{totalAmount}</p>
             <p className="w-[15%]">{orderStatus}</p>
         </div>
     )
 }
 
-export const SellerOrderViewListTableRow = ({id, seller_order_id, buyer_id, buyerName, orderDate, totalAmount, orderStatus} : 
-    {id: number, seller_order_id: string, buyer_id: string, buyerName: string, orderDate: Date, totalAmount: number, orderStatus: OrderStatus}) => 
+export const SellerOrderViewListTableRow = ({Sr, seller_order_id, buyer_id, buyerName, orderDate, totalAmount, orderStatus} : 
+    {Sr: number, seller_order_id: string, buyer_id: string, buyerName: string, orderDate: Date, totalAmount: number, orderStatus: OrderStatus}) => 
 {
     return (
-        <div className="flex p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
-            <p className="w-[5%]">{id}</p>
-            <p className="w-[20%]">{seller_order_id}</p>
+        <div className="flex items-center p-2 w-full border-b-1 border-green-900 hover:bg-gray-600 text-center">
+            <p className="w-[5%]">{Sr}</p>
+            <Link className="w-[20%] hover:text-green-500 hover:scale-110 duration-150" href={`/seller-orders/${seller_order_id}`}>{seller_order_id}</Link>
             <p className="w-[20%]">{buyer_id}</p>
             <p className="w-[20%]">{buyerName}</p>
-            <p className="w-[15%]">{orderDate.toDateString()}</p>
+            <p className="w-[15%]">{(new Date(orderDate)).toDateString()}</p>
             <p className="w-[10%]">{totalAmount}</p>
             <p className="w-[10%]">{orderStatus}</p>
         </div>
