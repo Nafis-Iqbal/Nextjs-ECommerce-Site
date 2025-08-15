@@ -13,13 +13,15 @@ const maxCategoriesPerProduct = 4;
 
 export const CategorySelectionModule = ({
   productId = '', 
-  className, 
+  className,
+  labelStyle,
   editMode,
   selectedCategories,
   setSelectedCategories
 } : {
   productId?: string, 
   className: string, 
+  labelStyle?: string,
   editMode: 'create' | 'edit',
   selectedCategories: Category[];
   setSelectedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
@@ -101,7 +103,7 @@ export const CategorySelectionModule = ({
   return (
     <div className={`flex flex-col space-y-2 mb-4 ${className}`}>
       {/* Product Categories Header */}
-      <label className="w-fit">
+      <label className={`w-fit ${labelStyle}`}>
         Product Categories
       </label>
 

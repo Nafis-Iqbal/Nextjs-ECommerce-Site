@@ -7,27 +7,15 @@ import { useSelector } from "react-redux";
 import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
-import { OrderApi } from "@/services/api";
+import { queryClient } from "@/services/apiInstance";
+import { OrderApi, UserApi } from "@/services/api";
 import { useGlobalUI } from "@/hooks/state-hooks/globalStateHooks";
 import * as cartActions from "@/global-state-context/cartUpdateSlice";
 
 import { HorizontalDivider } from "@/components/custom-elements/UIUtilities"
 import TableLayout from "@/components/layout-elements/TableLayout"
 import { CustomTextInput, CustomSelectInput } from "@/components/custom-elements/CustomInputElements"
-import { queryClient } from "@/services/apiInstance";
-import { UserInfoModule } from "@/components/modular-components/UserInfoModule";
-
-const defaultUserAddress: Address = {
-    id: "",
-    addressLine1: "Default Address Line1",
-    addressLine2: "Default Address Line2",
-    city: "Dhaka",
-    state: "Dhaka",
-    postalCode: "2100",
-    country: "Bangladesh",
-    phoneNumber: "019XXXXXXXX",
-    user_id: "ggiffy"
-}
+import { AddressManagerModule } from "@/components/modular-components/AddressManagerModule";
 
 export default function CheckoutPage() {
     const cartUpdateState: {
@@ -45,8 +33,10 @@ export default function CheckoutPage() {
     const dispatch = useDispatch();
     const {data: session} = useSession();
 
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
-    const [userAddress, setUserAddress] = useState<Address>(defaultUserAddress);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("CASH_ON_DELIVERY");
+    const [selectedAddressId, setSelectedAddressId] = useState<string>("");
+
+    const { data: userDetailData } = UserApi.useGetUserDetailRQ(session?.user.user_id as string, true);
 
     const {openNotificationPopUpMessage} = useGlobalUI();
 
@@ -57,7 +47,6 @@ export default function CheckoutPage() {
                 dispatch(cartActions.clearCart());
                 
                 queryClient.invalidateQueries({ queryKey: ["cart"] });
-                
                 router.push(`/orders/${responseData.data.id}/confirmation`);
             }
             else {
@@ -69,6 +58,8 @@ export default function CheckoutPage() {
         }
     );
 
+    const userDetail = (userDetailData?.data || {}) as User;
+
     const paymentMethodOptions = Object.values(PaymentMethod).map(method => ({
         value: method,
         label: method.replace("_", " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())
@@ -79,14 +70,19 @@ export default function CheckoutPage() {
     }
 
     const confirmBuyerOrder = () => {
+        if(selectedAddressId === "") {
+            openNotificationPopUpMessage("Please add a shipping address.");
+            return;
+        }
+
         if(!session){
             createBuyerOrder({cartItems: cartUpdateState.items.map(item => ({
                 product_id: item.productId,
                 product_quantity: item.productQuantity
-            })), address: userAddress});
+            })), addressId: selectedAddressId});
         }
         else {
-            createBuyerOrder({address: userAddress});
+            createBuyerOrder({addressId: selectedAddressId});
         }
     }
 
@@ -98,8 +94,6 @@ export default function CheckoutPage() {
         setSelectedPaymentMethod(value);
     };
 
-    //if(cartUpdateState.items.length === 0) redirect("/cart");
-
     return (
         <div className="flex flex-col p-2 mt-5">
             <div className="ml-6 flex flex-col items-center text-left space-y-2 border-1 border-green-800 ">
@@ -108,8 +102,25 @@ export default function CheckoutPage() {
                 <HorizontalDivider className="w-[95%] border-green-800"/>
 
                 <div className="flex flex-col w-[60%] font-sans space-y-5">
-                    <UserInfoModule/>
-                    
+                    <div className="flex flex-col">
+                        {session ? 
+                            (<>
+                                <p className="text-green-300 text-xl">Name:&nbsp;&nbsp;<span className="text-white">{userDetail.user_name}</span></p>
+                                <p className="text-green-300 text-xl">Email:&nbsp;&nbsp;<span className="text-white">{userDetail.email}</span></p>
+                            </>) : 
+                            (<>
+                                <p className="text-green-300 text-xl">Guest User</p>
+                            </>)
+                        }
+                    </div>
+
+                    <AddressManagerModule 
+                        userId={userDetail.id} 
+                        addressBlockCustomStyle="w-[75%]" 
+                        selectOnlyMode={true} 
+                        setSelectedAddressId={setSelectedAddressId}
+                    />
+
                     <div className="flex flex-col space-y-2">
                         <p className="text-green-300 text-xl">Items:</p>
 
@@ -187,24 +198,13 @@ export default function CheckoutPage() {
                             <input className="w-6 h-6" type="checkbox"></input>
                             <p className="">Terms & Conditions box</p>
                         </div>
-                        
-                        {
-                            (selectedPaymentMethod === "CASH_ON_DELIVERY") ? (
-                                <button 
-                                    className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm"
-                                    onClick={openPaymentForm}
-                                >
-                                    Proceed to Payment
-                                </button>
-                            ) : ( 
-                                <button 
-                                    className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm" 
-                                    onClick={confirmBuyerOrder}
-                                >
-                                    Confirm Order
-                                </button>
-                            )
-                        }
+
+                        <button 
+                            className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm" 
+                            onClick={selectedPaymentMethod === "CASH_ON_DELIVERY" ? confirmBuyerOrder : openPaymentForm}
+                        >
+                            {selectedPaymentMethod === "CASH_ON_DELIVERY" ? "Confirm Order" : "Proceed to Payment"}
+                        </button>
                     </div>  
                 </div>
             </div>

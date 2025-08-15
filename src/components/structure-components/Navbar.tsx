@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
                         </Link>
                     )}
 
-                    {session && <FaSignOutAlt className="text-2xl text-gray-800 hover:scale-110 cursor-pointer" onClick={onLogOutClick} />}
+                    {session && <FaSignOutAlt className="text-3xl text-gray-800 hover:scale-120 cursor-pointer" onClick={onLogOutClick} />}
                 </div>
             </div>
         </div>

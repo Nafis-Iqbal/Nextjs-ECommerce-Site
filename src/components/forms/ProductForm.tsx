@@ -95,10 +95,14 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
     const onProductFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if(mode === "create") createProductMutate(productFormData as Product);
-        else updateProductMutate(productFormData as Product);
+        const result = createProductSchema.safeParse(productFormData);
 
-        setActionTrigger(true);
+        if(result.success === true){
+            if(mode === "create") createProductMutate(productFormData as Product);
+            else updateProductMutate(productFormData as Product);
+
+            setActionTrigger(true);
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -150,6 +154,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
                 className="w-full px-2 md:px-0 md:w-[500px]"
                 placeholderText="Enter product title"
                 label="Product Title"
+                labelStyle="text-green-300"
                 name="title"
                 value={productFormData?.title || ""}
                 onChange={handleChange}
@@ -160,6 +165,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
                 className="w-full px-2 md:px-0 md:w-[500px] md:h-[150px]"
                 placeholderText="Enter product description"
                 label="Description"
+                labelStyle="text-green-300"
                 name="description"
                 value={productFormData?.description || ""}
                 onChange={handleChange}
@@ -167,7 +173,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
             />
 
             <CategorySelectionModule productId={productId} className="md:w-[500px] md:min-h-[150px]" editMode={mode}
-                selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}
+                selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} labelStyle="text-green-300"
             />
 
             <CustomTextInput
@@ -175,6 +181,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
                 className="w-full px-2 md:px-0 md:w-[250px]"
                 placeholderText="Enter product price"
                 label="Price"
+                labelStyle="text-green-300"
                 name="price"
                 value={productFormData?.price || ""}
                 onChange={handleChange}
@@ -186,6 +193,7 @@ export const ProductForm = ({mode, productData = {}, product_id}: ProductFormPro
                 className="w-full px-2 md:px-0 md:w-[250px]"
                 placeholderText="Enter initial product quantity"
                 label="Initial Inventory Quantity"
+                labelStyle="text-green-300"
                 name="quantity"
                 value={productFormData?.quantity || ""}
                 onChange={handleChange}

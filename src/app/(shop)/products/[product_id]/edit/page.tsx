@@ -24,7 +24,7 @@ export default function ProductEditPage() {
                 <div className="flex space-x-10 items-center h-[40px]">
                     <p className="text-green-200">Edit product to your satisfaction.</p>
 
-                    <LoadingSpinnerBlock isOpen={detailFetchLoading} customStyle="w-[30px] h-[30px]"/>
+                    <LoadingSpinnerBlock isOpen={detailFetchLoading} className="w-[30px] h-[30px]"/>
                 </div>
 
                 <ProductForm mode={"edit"} productData={productDetailData?.data ?? {}} product_id={params.product_id as string}/>

@@ -28,7 +28,7 @@ const ConfirmationModal = ({ isVisible, message, onConfirm, onCancel } : Confirm
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
-                <p className="text-lg font-semibold">{message}</p>
+                <p className="text-lg text-green-300">{message}</p>
                 <div className="mt-6 flex justify-center space-x-4">
                     <button
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500"
@@ -37,7 +37,7 @@ const ConfirmationModal = ({ isVisible, message, onConfirm, onCancel } : Confirm
                         Confirm
                     </button>
                     <button
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-400"
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-500 disabled:cursor-not-allowed text-white rounded-sm font-medium"
                         onClick={onCancel}
                     >
                         Cancel

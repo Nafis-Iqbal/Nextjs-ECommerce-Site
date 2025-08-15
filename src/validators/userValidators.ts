@@ -17,7 +17,8 @@ export const loginUserSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
-    user_name: z.string().min(3)
+    user_name: z.string().min(3).optional(),
+    addressId: z.string().uuid().optional()
 });
 
 export const updateUserRoleSchema = z.object({

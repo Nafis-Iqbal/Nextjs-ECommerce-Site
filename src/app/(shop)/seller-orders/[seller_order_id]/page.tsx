@@ -43,14 +43,17 @@ export default function SellerOrderDetailPage() {
         }
     }, [params.seller_order_id])
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sellerOrderData = sellerOrderDetail?.data;
+
     let sellerOrderTotal = 0;
 
-    if (Array.isArray(sellerOrderDetail?.data)) {
-        sellerOrderTotal = sellerOrderDetail.data.reduce((total, item) => total + (item.product_price * item.product_quantity), 0);
+    if (Array.isArray(sellerOrderData)) {
+        sellerOrderTotal = sellerOrderData.reduce((total, item) => total + (item.product_price * item.product_quantity), 0);
     }
 
-    const disableSellerOrderUpdate = Array.isArray(sellerOrderDetail?.data) && 
-    (sellerOrderDetail?.data?.[0]?.orderStatus === "SHIPPED" || sellerOrderDetail?.data?.[0]?.orderStatus === "COMPLETED" || sellerOrderDetail?.data?.[0]?.orderStatus === "FAILED");
+    const disableSellerOrderUpdate = Array.isArray(sellerOrderData) && 
+    (sellerOrderData?.[0]?.orderStatus === "SHIPPED" || sellerOrderData?.[0]?.orderStatus === "COMPLETED" || sellerOrderData?.[0]?.orderStatus === "FAILED");
 
     const onOrderForfeitClicked = () => {
         setStatusToAssign(OrderStatus.FAILED);
@@ -87,10 +90,14 @@ export default function SellerOrderDetailPage() {
                     <div className="flex flex-col space-y-5 font-sans text-left w-[65%] ml-10">
                         <h4 className="text-green-300">Order ID:&nbsp;&nbsp;<span className="text-white font-semibold text-3xl">{params.seller_order_id || "Unknown"}</span></h4>
 
-                        <div className="flex flex-col">
-                            <h4 className="text-green-300">Buyer Name:&nbsp;&nbsp;<span className="text-white">Nafis</span></h4>
-                            <h4 className="text-green-300">Buyer Email:&nbsp;&nbsp;<span className="text-white">nafisiqbal53@gmail.com</span></h4>
-                        </div>
+                        {Array.isArray(sellerOrderData) && sellerOrderData?.[0]?.buyer_id ? (
+                            <div className="flex flex-col">
+                                <p className="text-green-300 text-xl">Name:&nbsp;&nbsp;<span className="text-white">{sellerOrderData?.[0]?.buyer_name}</span></p>
+                                <p className="text-green-300 text-xl">Email:&nbsp;&nbsp;<span className="text-white">{sellerOrderData?.[0]?.buyer_email}</span></p>
+                            </div>
+                        ) : (
+                            <h4 className="text-green-300">Guest User</h4>
+                        )}
 
                         <h4 className="text-green-300">Ordered Items</h4>
                         <TableLayout className="">
@@ -104,7 +111,7 @@ export default function SellerOrderDetailPage() {
                                 <p className="w-[10%] text-green-200">Status</p>
                             </div>
                             {
-                                sellerOrderDetail?.data && 
+                                sellerOrderData && 
                                 Array.isArray(sellerOrderDetail.data) && 
                                 sellerOrderDetail.data.map((item, index) => (
                                     <SellerOrderItemListRow 
@@ -128,7 +135,14 @@ export default function SellerOrderDetailPage() {
                             </div>
                         </TableLayout>
 
-                        <AddressManagerModule/>
+                        {Array.isArray(sellerOrderData) &&
+                            <AddressManagerModule 
+                                userId={null} 
+                                addressBlockCustomStyle="w-[75%]" 
+                                infoOnlyMode={true}
+                                infoAddressId={sellerOrderData?.[0]?.address_id}
+                            />
+                        }
                         
                         <div className="flex space-x-10 mb-10">
                             <button className="px-2 py-1 bg-green-600 hover:bg-green-500 rounded-sm">Print this page</button>
@@ -142,16 +156,16 @@ export default function SellerOrderDetailPage() {
                         <div className="flex justify-between">
                             <p className="text-green-200">Payment Status</p>
 
-                            {Array.isArray(sellerOrderDetail?.data) && <div className="flex space-x-5 justify-right">
-                                <p className="">{sellerOrderDetail?.data?.[0]?.orderStatus === "PAYMENT_PENDING" ? "PENDING" : 
-                                    sellerOrderDetail?.data?.[0]?.orderStatus === "CANCELLED" ? "N/A" : "PAID"}</p>
+                            {Array.isArray(sellerOrderData) && <div className="flex space-x-5 justify-right">
+                                <p className="">{sellerOrderData?.[0]?.orderStatus === "PAYMENT_PENDING" ? "PENDING" : 
+                                    sellerOrderData?.[0]?.orderStatus === "CANCELLED" ? "N/A" : "PAID"}</p>
                             </div>}
                         </div>
                         
                         <div className="flex justify-between">
                             <p className="text-green-200">Seller Order Status</p>
 
-                            {Array.isArray(sellerOrderDetail?.data) && <p>{sellerOrderDetail?.data?.[0]?.orderStatus || "Unknown Status"}</p>}
+                            {Array.isArray(sellerOrderData) && <p>{sellerOrderData?.[0]?.orderStatus || "Unknown Status"}</p>}
                         </div>
 
                         <button 

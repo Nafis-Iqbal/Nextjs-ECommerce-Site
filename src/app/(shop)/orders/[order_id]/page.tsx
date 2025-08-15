@@ -11,12 +11,13 @@ import ConfirmationModal from "@/components/modals/ConfirmationModal";
 import TableLayout from "@/components/layout-elements/TableLayout";
 import { HorizontalDivider } from "@/components/custom-elements/UIUtilities";
 import { AddressManagerModule } from "@/components/modular-components/AddressManagerModule";
-import { set } from "zod";
+import { useSession } from "next-auth/react";
 
 
 export default function BuyerOrderDetailPage() {
     const params = useParams();
     const router = useRouter();
+    const { data: session } = useSession();
     
     const [paymentDone, setPaymentDone] = useState(false);
     const [isOrderCancelled, setIsOrderCancelled] = useState(false);
@@ -24,7 +25,7 @@ export default function BuyerOrderDetailPage() {
 
     const {openNotificationPopUpMessage} = useGlobalUI();
 
-    const {data: buyerOrderDetail, isLoading: isLoadingBuyerOrderDetail, isError: isErrorBuyerOrderDetail} = OrderApi.useGetBuyerOrderDetailRQ(params.order_id as string);
+    const {data: buyerOrderDetail} = OrderApi.useGetBuyerOrderDetailRQ(params.order_id as string);
 
     const {mutate: updateOrderStatus} = OrderApi.useUpdateBuyerOrderStatusRQ(
         (responseData) => {
@@ -59,6 +60,8 @@ export default function BuyerOrderDetailPage() {
         }
     }, [buyerOrderDetail]);
 
+    const buyerOrderData = buyerOrderDetail?.data;
+    
     const onOrderCancel = () => {
         setOrderCancelConfirmationVisible(true);
     };
@@ -89,8 +92,15 @@ export default function BuyerOrderDetailPage() {
                         <h4 className="text-green-300">Order ID:&nbsp;&nbsp;<span className="text-white font-semibold text-3xl">{buyerOrderDetail?.data?.id ?? "Unknown Order"}</span></h4>
 
                         <div className="flex flex-col">
-                            <h4 className="text-green-300">Name:&nbsp;&nbsp;<span className="text-white">Nafis</span></h4>
-                            <h4 className="text-green-300">Email:&nbsp;&nbsp;<span className="text-white">nafisiqbal53@gmail.com</span></h4>
+                            {session ? 
+                                (<>
+                                    <p className="text-green-300 text-xl">Name:&nbsp;&nbsp;<span className="text-white">{buyerOrderData?.buyer?.user_name}</span></p>
+                                    <p className="text-green-300 text-xl">Email:&nbsp;&nbsp;<span className="text-white">{buyerOrderData?.buyer?.email}</span></p>
+                                </>) : 
+                                (<>
+                                    <h4 className="text-green-300">Guest User</h4>
+                                </>)
+                            }
                         </div>
 
                         <h4 className="text-green-300">Ordered Items</h4>
@@ -136,7 +146,12 @@ export default function BuyerOrderDetailPage() {
                             </div>
                         </TableLayout>
 
-                        <AddressManagerModule/>
+                        <AddressManagerModule 
+                            userId={null} 
+                            addressBlockCustomStyle="w-[75%]" 
+                            infoOnlyMode={true}
+                            infoAddressId={buyerOrderData?.address_id}
+                        />
 
                         <h4 className="text-green-300">Selected method of payment:&nbsp;&nbsp;<span className="text-white font-bold text-3xl">Cash on Delivery</span></h4>
                         

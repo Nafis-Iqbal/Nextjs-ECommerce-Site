@@ -24,7 +24,7 @@ export function useCreateUserRQ(onSuccessFn: (ApiResponse: any) => void, onError
 }
 
 export async function getUsers(queryString?: string) {
-  const response = await apiFetch<ApiResponse<User>>(`/users${queryString ? `?${queryString}` : ""}`, {
+  const response = await apiFetch<ApiResponse<User[]>>(`/users${queryString ? `?${queryString}` : ""}`, {
     method: 'GET'
   });
 
@@ -32,7 +32,7 @@ export async function getUsers(queryString?: string) {
 }
 
 export function useGetUsersRQ(queryString?: string) {
-    return useQuery<ApiResponse<User>>({
+    return useQuery<ApiResponse<User[]>>({
         queryFn: () => getUsers(queryString),
         queryKey: ["users", queryString],
         staleTime: queryString ? 0 : 30_000, 
@@ -59,6 +59,24 @@ export function useUpdateUserRQ(onSuccessFn: (ApiResponse: any) => void, onError
         onError: () => {
             onErrorFn();
         }
+    });
+}
+
+export async function getUserDetail(userId: string) {
+  const response = await apiFetch<ApiResponse<User>>(`/users/${userId}`, {
+    method: 'GET'
+  });
+
+  return response;
+}
+
+export function useGetUserDetailRQ(userId: string, enabled: boolean) {
+    return useQuery<ApiResponse<User>>({
+        queryFn: () => getUserDetail(userId),
+        queryKey: ["users", userId],
+        staleTime: 30_000,
+        gcTime: 30 * 1000,
+        enabled
     });
 }
 

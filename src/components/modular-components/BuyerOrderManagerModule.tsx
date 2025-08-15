@@ -61,14 +61,14 @@ export const BuyerOrderManagerModule = ({className} : {className?: string}) => {
                         isLoadingOrders ? (<NoContentTableRow displayMessage="Loading Data" tdColSpan={1}/>) :
                         isErrorOrders ? (<NoContentTableRow displayMessage="An error occurred" tdColSpan={1}/>) :
 
-                        (allBuyerOrders?.data && Array.isArray(allBuyerOrders?.data) && allBuyerOrders?.data.length <= 0) ? (<NoContentTableRow displayMessage="No products found" tdColSpan={1}/>) :
+                        (allBuyerOrders?.data && Array.isArray(allBuyerOrders?.data) && allBuyerOrders?.data.length <= 0) ? (<NoContentTableRow displayMessage="No orders found" tdColSpan={1}/>) :
                         (Array.isArray(allBuyerOrders?.data) && 
                             allBuyerOrders?.data?.map((order: Order, index: number) => (
                                 <BuyerOrderListTableRow 
                                     key={order.id} 
                                     id={index + 1} 
                                     buyerOrderID={order.id} 
-                                    orderUserName={order.user?.user_name || 'Unknown'}
+                                    orderUserName={order.buyer?.user_name || 'Unknown'}
                                     totalAmount={order.totalAmount || 0}
                                     orderStatus={order.orderStatus || 'Unknown'}
                                     createdDate={new Date(order.createdAt)}

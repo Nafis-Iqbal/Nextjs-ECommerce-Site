@@ -106,7 +106,7 @@ const SidebarMenuWithRef = forwardRef<HTMLDivElement, SidebarMenuProps>(({classN
                 </li>
                 <li>
                     <button onClick={() => 
-                        navigateBySession({adminURL: `/products?user_id=${session?.user.user_id}`, userURL: `/offers`, masterAdminURL: `/users`})
+                        navigateBySession({adminURL: `/products?user_id=${session?.user.user_id}`, userURL: `/offers`, masterAdminURL: `/user_profile`})
                     } className="w-[100%] p-2 hover:bg-gray-600 border-b-1 text-pink-100">
                         {sessionConditionedButtonName({adminUserButton: "Your Products", userButton: "Your Offers", masterAdminUserButton: "All Users"})}
                     </button>

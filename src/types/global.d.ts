@@ -1,7 +1,6 @@
 /* eslint-disable no-var */
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, UserStatus } from '@prisma/client'
 import { OrderStatus, Role, ProductStatus } from './enums';
-import { Status } from '@prisma/client';
 
 declare global {
   var client: PrismaClient | undefined; 
@@ -24,8 +23,13 @@ declare global {
     user_name: string;
     email: string;
     role: Role;
+    userStatus: UserStatus;
     emailVerified: Date;
     image: Image;
+    createdAt?: DateTime;
+    addressId?: string;
+
+    address?: Address[];
   }
 
   interface Product {
@@ -79,7 +83,7 @@ declare global {
   interface Address {
     id: string;
     addressLine1: string;
-    addressLine2?: string | null;
+    addressLine2: string;
     city: string;
     state: string;
     postalCode: string;
@@ -99,7 +103,7 @@ declare global {
     paidAt?: DateTime | null;
 
     isGuestUser: boolean;
-    user?: User;
+    buyer?: User;
     address_id: string;
 
     items?: OrderItem[];
@@ -108,7 +112,8 @@ declare global {
 
   interface BuyerOrderPayload {
     cartItems?: {product_id: string, product_quantity: number}[],
-    address: Address; 
+    address?: Address;
+    addressId?: string;
   }
 
   interface SellerOrder {

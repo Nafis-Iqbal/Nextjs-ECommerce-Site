@@ -1,26 +1,30 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { OrderApi } from "@/services/api";
+import { useSession } from "next-auth/react";
 
 import TableLayout from "@/components/layout-elements/TableLayout";
 import { NextImage, HorizontalDivider } from "@/components/custom-elements/UIUtilities";
 import { AddressManagerModule } from "@/components/modular-components/AddressManagerModule";
-import { OrderApi } from "@/services/api";
 
 export default function OrderConfirmationPage() {
     const router = useRouter();
     const params = useParams();
+    const { data: session } = useSession();
 
     const [orderSuccess, setOrderSuccess] = useState(false);
 
-    const {data: buyerOrderDetail, isLoading: isLoadingBuyerOrderDetail, isError: isErrorBuyerOrderDetail} = OrderApi.useGetBuyerOrderDetailRQ(params.order_id as string);
+    const {data: buyerOrderDetail } = OrderApi.useGetBuyerOrderDetailRQ(params.order_id as string);
 
     useEffect(() => {
         if (params?.order_id) {
             setOrderSuccess(true);
         }
     }, [params]);
+
+    const buyerOrderData = buyerOrderDetail?.data;
 
     return (
         <div className="flex flex-col p-2 mt-5">
@@ -37,8 +41,15 @@ export default function OrderConfirmationPage() {
                             <h4 className="text-green-300">Order ID:&nbsp;&nbsp;<span className="text-white font-semibold text-3xl">{params.order_id}</span></h4>
                             
                             <div className="flex flex-col">
-                                <h4 className="text-green-300">Name:&nbsp;&nbsp;<span className="text-white">Nafis</span></h4>
-                                <h4 className="text-green-300">Email:&nbsp;&nbsp;<span className="text-white">nafisiqbal53@gmail.com</span></h4>
+                                {session ? 
+                                    (<>
+                                        <p className="text-green-300 text-xl">Name:&nbsp;&nbsp;<span className="text-white">{buyerOrderData?.buyer?.user_name}</span></p>
+                                        <p className="text-green-300 text-xl">Email:&nbsp;&nbsp;<span className="text-white">{buyerOrderData?.buyer?.email}</span></p>
+                                    </>) : 
+                                    (<>
+                                        <p className="text-green-300 text-xl">Guest User</p>
+                                    </>)
+                                }
                             </div>
 
                             <h4 className="text-green-300">Ordered Items</h4>
@@ -84,7 +95,12 @@ export default function OrderConfirmationPage() {
                                 </div>
                             </TableLayout>
 
-                            <AddressManagerModule/>
+                            <AddressManagerModule 
+                                userId={buyerOrderData?.buyer?.id || null} 
+                                addressBlockCustomStyle="w-[75%]" 
+                                infoOnlyMode={true}
+                                infoAddressId={buyerOrderData?.address_id}
+                            />
 
                             <h4 className="text-green-300">Selected method of payment:&nbsp;&nbsp;<span className="text-white font-bold text-3xl">Cash on Delivery</span></h4>
                            

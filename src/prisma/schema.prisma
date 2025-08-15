@@ -77,6 +77,8 @@ model User {
   earned          Int           @default(0)
   orderCount      Int           @default(0)
   emailVerified   DateTime?     @default(now())
+  createdAt       DateTime      @default(now())
+  addressId       String?       @default("")
 
   user_address      Address[]
   products          Product[]
@@ -260,9 +262,9 @@ model OrderItem {
 }
 
 model Address {
-  id           String  @id @default(uuid()) @map("_id")
+  id           String @id @default(uuid()) @map("_id")
   addressLine1 String
-  addressLine2 String?
+  addressLine2 String
   city         String
   state        String
   postalCode   String

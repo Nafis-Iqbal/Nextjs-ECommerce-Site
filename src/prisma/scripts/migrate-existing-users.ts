@@ -4,7 +4,13 @@ import prismadb from "../prismadb";
 async function migrateUsers() {
   try {
     // Fetch all users (you can paginate if the dataset is huge)
-    const users = await prismadb.user.findMany();
+    const users = await prismadb.user.findMany({
+      where:{
+        id: {
+          notIn: ["5ac6bef1-bea5-43bd-8d61-22635c83ad47", "c6eff48d-f630-4eef-a2f9-0a326f364c8e", ]
+        }
+      }
+    });
 
     console.log(`Found ${users.length} users. Starting migration...`);
 
@@ -13,11 +19,9 @@ async function migrateUsers() {
     for (const user of users) {
       const updateData: any = {};
 
-      updateData.userStatus = 'ACTIVE';
-      updateData.paymentStatus = 'PAID';
-      updateData.spent = 0;
-      updateData.earned = 0;
-      updateData.orderCount = 0;
+      //Place updated user fields below here
+      updateData.addressId = null;
+      //Place updated user fields above here
 
       if (Object.keys(updateData).length > 0) {
         await prismadb.user.update({
@@ -36,4 +40,4 @@ async function migrateUsers() {
   }
 }
 
-//migrateUsers();
+migrateUsers();

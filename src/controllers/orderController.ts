@@ -8,11 +8,11 @@ import { AddressController, CartController } from "@/controllers";
 //can use user's address, or new address
 export async function createOrderForUser(user_id: string, data: {
     cartItems?: {product_id: string, product_quantity: number}[],
-    address?: {addressLine1: string, city: string, state: string, postalCode: string, country: string, phoneNumber: string, addressLine2?: string}}
-)
+    addressId?: string
+})
 {
     try{
-        const {cartItems, address} = data;
+        const {cartItems, addressId} = data;
 
         let newOrder: Order | null = null;
         let orderAddress: Address | null = null;
@@ -42,11 +42,28 @@ export async function createOrderForUser(user_id: string, data: {
 
         const totalAmount = await calculateCartTotal(productIds, cartItemList) ?? 0;
 
-        if(address){
-            orderAddress = await AddressController.createAddress({user_id}, address);
+        if(addressId){
+            orderAddress = await prismadb.address.findUnique({
+                where: {
+                    id: addressId
+                }
+            });
         }
-        else{
-            orderAddress = await AddressController.getAddressByUserID(user_id);
+        else {
+            const orderUser = await prismadb.user.findUnique({
+                where: {
+                    id: user_id
+                }
+            });
+
+            if(orderUser)
+            {
+                orderAddress = await prismadb.address.findFirst({
+                    where: {
+                        user_id: orderUser.id
+                    }
+                });
+            }
         }
 
         if(orderAddress)
@@ -107,14 +124,18 @@ export async function createOrderForUser(user_id: string, data: {
 
 //use new address
 export async function createOrderForGuest(data: {
-    address: {addressLine1: string, city: string, state: string, postalCode: string, country: string, phoneNumber: string, addressLine2?: string},
-    cartItems: {product_id: string, product_quantity: number}[]}
-)
+    addressId: string,
+    cartItems: {product_id: string, product_quantity: number}[]
+})
 {
     try{
-        const {address, cartItems} = data;
+        const {addressId, cartItems} = data;
 
-        const createdAddress = await AddressController.createAddress({}, address);
+        const createdAddress = await prismadb.address.findUnique({
+            where: {
+                id: addressId
+            }
+        });
 
         const productIds = cartItems.map(item => item.product_id);
 
@@ -306,6 +327,7 @@ export async function getOrderDetail(id: string, self_user_data: {user_id: strin
                 },
                 include: {
                     items: true,
+                    buyer: true
                 }
             })
         }
@@ -319,6 +341,7 @@ export async function getOrderDetail(id: string, self_user_data: {user_id: strin
                 },
                 include: {
                     items: true,
+                    buyer: true
                 }
             })
         }

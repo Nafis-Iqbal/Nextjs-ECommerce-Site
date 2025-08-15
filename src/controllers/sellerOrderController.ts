@@ -53,10 +53,11 @@ export async function getSellerOrderDetail(user_id: string, sellerOrderId: strin
                 }
             },
             include: {
-                items: true
+                items: true,
+                buyer: true
             }
         });
-        console.log(tempSellerOrder);
+        
         if(!tempSellerOrder){
             return new Response(
                 JSON.stringify({
@@ -81,6 +82,9 @@ export async function getSellerOrderDetail(user_id: string, sellerOrderId: strin
             productStatus: products.find(p => p.id === item.product_id)?.productStatus ?? null,
             seller_id: tempSellerOrder.seller_id,
             buyer_id: tempSellerOrder.buyer_id,
+            address_id: tempSellerOrder.address_id,
+            buyer_name: tempSellerOrder.buyer?.user_name,
+            buyer_email: tempSellerOrder.buyer?.email,
             order_id: tempSellerOrder.id,
             orderStatus: tempSellerOrder.orderStatus
         }));

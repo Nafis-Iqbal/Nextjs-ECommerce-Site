@@ -30,6 +30,7 @@ export const CustomMiniTextInput = forwardRef<HTMLInputElement, CustomInputProps
 
 CustomMiniTextInput.displayName = "CustomMiniTextInput";
 
+//"p-2 rounded-sm bg-gray-700 text-white border border-gray-600 focus:border-green-500 focus:outline-none"
 export const CustomTextInput = forwardRef<HTMLInputElement, CustomInputProps>((props, ref) => {
     const {
       className,
@@ -42,10 +43,10 @@ export const CustomTextInput = forwardRef<HTMLInputElement, CustomInputProps>((p
 
     return (
       <div className="relative flex flex-col space-y-3 group">
-        {label && <label className={labelStyle}>{label}</label>}
+        {label && <label className={labelStyle ? labelStyle : "text-green-300"}>{label}</label>}
         
-        <input className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
-            focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
+        <input className={`p-1 bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-sm
+            focus:outline-none focus:ring-2 focus:ring-green-500 ${className}`} placeholder={placeholderText}
             style={{ textIndent: '6px' }}
             ref={ref}
             { ...rest }
@@ -61,6 +62,7 @@ export const CustomTextInput = forwardRef<HTMLInputElement, CustomInputProps>((p
 })
 
 CustomTextInput.displayName = "CustomTextInput";
+
 
 type CustomTextAreaProps = {
   className?: string;
@@ -82,9 +84,9 @@ export const CustomTextAreaInput = forwardRef<HTMLTextAreaElement, CustomTextAre
 
     return (
       <div className="relative flex flex-col space-y-3 group">
-        {label && <label className={labelStyle}>{label}</label>}
+        {label && <label className={labelStyle ? labelStyle : "text-green-300"}>{label}</label>}
 
-        <textarea className={`p-1 bg-white border border-gray-300 placeholder-gray-400 text-gray-800 rounded-sm
+        <textarea className={`p-1 bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-sm
             focus:outline-none focus:ring-2 focus:ring-green-600 ${className}`} placeholder={placeholderText}
             style={{ textIndent: '6px' }}
             ref={ref}
@@ -129,10 +131,10 @@ export const CustomSelectInput = forwardRef<HTMLSelectElement, CustomSelectProps
 
   return (
     <div className="relative flex flex-col space-y-3 group">
-      {label && <label className={labelStyle}>{label}</label>}
+      {label && <label className={labelStyle ? labelStyle : "text-green-300"}>{label}</label>}
 
       <select
-        className={`p-1 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-green-500 ${className}`}
+        className={`p-1 border border-gray-600 rounded-sm focus:outline-none focus:ring-2 focus:ring-green-500 ${className}`}
         ref={ref}
         { ...rest }
       >

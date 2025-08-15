@@ -66,7 +66,14 @@ export async function getUserDetail(self: boolean, id: string) {
                 id: true,
                 user_name: true,
                 email: true,
-                role: true
+                role: true,
+                userStatus: true,
+                paymentStatus: true,
+                spent: true,
+                earned: true,
+                orderCount: true,
+                createdAt: true,
+                addressId: true
             }
         });
 
@@ -96,14 +103,15 @@ export async function getUserDetail(self: boolean, id: string) {
     }
 }
 
-export async function updateUserDetail(id: string, data: {user_name: string}) {
-    const {user_name} = data;
+export async function updateUserDetail(id: string, data: {user_name: string, addressId: string}) {
+    const {user_name, addressId} = data;
 
     try {
         const updated_User = await prismadb.user.update({
             where: {id},
             data: {
-                user_name
+                user_name,
+                addressId
             }
         });
 
